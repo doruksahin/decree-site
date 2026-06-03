@@ -1,0 +1,19 @@
+
+[1;36m$ decree why src/auth/tokens.py --json[0m
+{
+  "query": "src/auth/tokens.py",
+  "match_count": 1,
+  "matches": [
+    {
+      "decision_id": "SPEC-00000000000000000000000001",
+      "type": "spec",
+      "status": "implemented",
+      "date": "2026-05-10",
+      "title": "JWT token storage",
+      "match_kind": "exact",
+      "matched_path": "src/auth/tokens.py",
+      "symbol": null
+    }
+  ]
+}
+[2m→ exit 0[0m

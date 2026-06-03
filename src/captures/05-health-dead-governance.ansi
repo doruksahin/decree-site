@@ -1,0 +1,31 @@
+
+[1m── The corpus: a SPEC governing two files, with real trailer-linked history ──[0m
+[index] rebuilding into .decree/index.sqlite
+[index] decisions=1  refs=0  governs=2  acs=0  commits=2
+[index] git_sync_ms=94
+✓ index rebuilt in 113ms
+
+[1m── Health: declared scope no commit touched (a finding, exit 1) + scope the code grew into (advisory) ──[0m
+
+[1;36m$ decree health[0m
+Stale decisions: none (all governed paths quiet).
+
+Ungoverned hotspots: none above threshold.
+
+Dead governance (declared governs paths no trailer-linked commit has touched):
+
+  SPEC-00000000000000000000000001   untouched by its 2 linked commit(s):
+    src/auth/legacy_sso.py
+
+Suggested governance (advisory — ungoverned files with a proposed owner; does not affect exit status):
+
+  SPEC-00000000000000000000000001   from 2 linked commit(s) touching 2 path(s):
+    src/auth/helper.py  (touched in 2 commits)
+
+  observed as of 2026-06-03T15:50:30+00:00; 0 decision(s) have no trailer-linked commits (governance unobservable).
+
+Thresholds: --threshold-commits=10 --threshold-days=30
+[2m→ exit 1[0m
+[1;32mVALUE:[0m   A decision's 'governs' list rots into fiction unnoticed → decree flags declared scope no trailer-linked commit ever touched (DEAD governance, exit 1) and, separately, scope the code grew into but never declared (SUGGESTED, advisory).
+[1;33mHONESTY:[0m Convention-bounded: the commit→decision link is the Implements: TRAILER convention, not a git guarantee — deterministic but not certain (needs 'decree commit' discipline).
+[1;33mHONESTY:[0m Asymmetry by design: DEAD is a finding (exit 1); SUGGESTED is advisory (exit 0, never feeds why()). A SPEC with zero trailered commits is reported 'unobserved, not dead' (fail-safe).

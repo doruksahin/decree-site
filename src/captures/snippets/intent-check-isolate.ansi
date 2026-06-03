@@ -1,0 +1,28 @@
+
+[1;36m$ decree intent-check --plan Edit token storage --files src/auth/tokens.py --other-active-files {"session-b": ["src/auth/tokens.py"]}[0m
+[intent-check] exit 1: findings present (conflicts, live-session overlaps, or stale governance).
+Intent check — pre-PR governance map
+  Plan: Edit token storage
+
+Planned files (1):
+  • src/auth/tokens.py
+
+Governing decisions (1):
+  ▸ SPEC-00000000000000000000000001  implemented  exact  governs src/auth/tokens.py
+    JWT token storage
+
+Stale governance (0):
+  (none)
+
+Unchecked acceptance criteria (0):
+  (none)
+
+Conflicts (0):
+  (none)
+
+Live-session conflicts (1):
+  ⇄ src/auth/tokens.py: also planned by session-b
+
+Recommended actions (1):
+  → isolate_session: src/auth/tokens.py is also planned by active session(s) session-b. Run in a dedicated worktree, or split this file out of one plan, before starting.
+[2m→ exit 1[0m

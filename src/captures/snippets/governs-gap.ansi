@@ -1,0 +1,27 @@
+
+[1;36m$ decree intent-check --plan edit auth helper --files src/auth/helper.py --under SPEC-00000000000000000000000001[0m
+Intent check — pre-PR governance map
+  Plan: edit auth helper
+
+Planned files (1):
+  • src/auth/helper.py
+
+Governing decisions (0):
+  (none — ungoverned plan)
+
+Stale governance (0):
+  (none)
+
+Unchecked acceptance criteria (0):
+  (none)
+
+Conflicts (0):
+  (none)
+
+Live-session conflicts (0):
+  (none)
+
+Recommended actions (2):
+  → add_governance: src/auth/helper.py has no governing decision. Consider writing a SPEC or amending an existing one's `governs:` list before starting.
+  → declare_governs [SPEC-00000000000000000000000001]: SPEC-00000000000000000000000001's commits repeat-touch src/auth/helper.py, which is not in its `governs:`. Consider declaring it (advisory).
+[2m→ exit 0[0m

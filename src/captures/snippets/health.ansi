@@ -1,0 +1,20 @@
+
+[1;36m$ decree health[0m
+Stale decisions: none (all governed paths quiet).
+
+Ungoverned hotspots: none above threshold.
+
+Dead governance (declared governs paths no trailer-linked commit has touched):
+
+  SPEC-00000000000000000000000001   untouched by its 2 linked commit(s):
+    src/auth/legacy_sso.py
+
+Suggested governance (advisory — ungoverned files with a proposed owner; does not affect exit status):
+
+  SPEC-00000000000000000000000001   from 2 linked commit(s) touching 2 path(s):
+    src/auth/helper.py  (touched in 2 commits)
+
+  observed as of 2026-06-03T15:50:51+00:00; 0 decision(s) have no trailer-linked commits (governance unobservable).
+
+Thresholds: --threshold-commits=10 --threshold-days=30
+[2m→ exit 1[0m

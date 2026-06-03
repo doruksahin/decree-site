@@ -1,0 +1,44 @@
+
+[1m── The corpus: one decision that governs the auth tokens file ──[0m
+[index] rebuilding into .decree/index.sqlite
+[index] decisions=1  refs=0  governs=1  acs=0  commits=0
+[index] git_sync_ms=30
+✓ index rebuilt in 47ms
+
+[1m── Ask which decision governs the file you're about to touch ──[0m
+
+[1;36m$ decree why src/auth/tokens.py[0m
+src/auth/tokens.py — 1 governing decision
+
+  ▸ SPEC-00000000000000000000000001  implemented  2026-05-10  exact
+    JWT token storage
+    governs: src/auth/tokens.py
+[2m→ exit 0[0m
+
+[1;36m$ decree why src/auth/tokens.py --json[0m
+{
+  "query": "src/auth/tokens.py",
+  "match_count": 1,
+  "matches": [
+    {
+      "decision_id": "SPEC-00000000000000000000000001",
+      "type": "spec",
+      "status": "implemented",
+      "date": "2026-05-10",
+      "title": "JWT token storage",
+      "match_kind": "exact",
+      "matched_path": "src/auth/tokens.py",
+      "symbol": null
+    }
+  ]
+}
+[2m→ exit 0[0m
+
+[1m── The honesty beat: a file no decision governs ──[0m
+
+[1;36m$ decree why src/auth/charge.py[0m
+src/auth/charge.py — no governing decisions
+[2m→ exit 0[0m
+[1;32mVALUE:[0m   git blame + grep + Slack archaeology → one command that returns the exact governing decision.
+[1;33mHONESTY:[0m why answers ONLY from declared 'governs:' frontmatter — never git, never semantic guessing.
+[1;33mHONESTY:[0m An empty result is a valid abstention (exit 0), not a failure. decree won't invent a decision.

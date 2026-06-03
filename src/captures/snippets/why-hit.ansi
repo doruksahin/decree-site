@@ -1,0 +1,8 @@
+
+[1;36m$ decree why src/auth/tokens.py[0m
+src/auth/tokens.py — 1 governing decision
+
+  ▸ SPEC-00000000000000000000000001  implemented  2026-05-10  exact
+    JWT token storage
+    governs: src/auth/tokens.py
+[2m→ exit 0[0m

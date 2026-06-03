@@ -17,10 +17,20 @@ export default defineConfig({
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/doruksahin/decree' },
       ],
-      // Dark is the headline aesthetic; keep the light toggle available.
+      // Default the site to dark (the headline aesthetic); the toggle still works
+      // and a user's explicit choice persists. Seeds only when unset.
+      head: [
+        {
+          tag: 'script',
+          content:
+            "try{var k='starlight-theme';var v=localStorage.getItem(k);if(v!=='light'){localStorage.setItem(k,'dark');document.documentElement.dataset.theme='dark';}}catch(e){document.documentElement.dataset.theme='dark';}",
+        },
+      ],
+      // Code/terminal frames are ALWAYS dark — terminal output is dark by nature,
+      // and this keeps real ANSI output readable regardless of page theme.
       expressiveCode: {
         themes: ['github-dark'],
-        useStarlightUiThemeColors: true,
+        useStarlightUiThemeColors: false,
         styleOverrides: {
           borderRadius: '0.5rem',
           borderColor: '#1f2430',

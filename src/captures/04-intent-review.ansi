@@ -1,0 +1,37 @@
+
+[1m── The corpus: same two decisions claiming src/auth/tokens.py ──[0m
+[index] rebuilding into .decree/index.sqlite
+[index] decisions=2  refs=0  governs=2  acs=0  commits=0
+[index] git_sync_ms=25
+✓ index rebuilt in 41ms
+
+[1m── Make a change, then review the diff against governance (CI-shaped, exit 1) ──[0m
+
+[1;36m$ decree intent-review --diff change.diff[0m
+[intent-review] exit 1: findings present (conflicts or stale governance).
+Intent review — file:change.diff
+
+Changed paths (1):
+  • src/auth/tokens.py
+
+Governing decisions (2):
+  ▸ SPEC-00000000000000000000000001  implemented  exact  governs src/auth/tokens.py
+    JWT token storage
+  ▸ SPEC-00000000000000000000000002  draft  exact  governs src/auth/tokens.py
+    Token rotation policy
+
+Stale governance (0):
+  (none)
+
+Unchecked acceptance criteria (0):
+  (none)
+
+Conflicts (1):
+  ✗ src/auth/tokens.py: SPEC-00000000000000000000000001, SPEC-00000000000000000000000002
+
+Recommended actions (2):
+  → resolve_conflict: src/auth/tokens.py is governed by SPEC-00000000000000000000000001, SPEC-00000000000000000000000002. Decide which decision is authoritative or supersede the others.
+  → add_implements_trailer [SPEC-00000000000000000000000002]: Changes touch files governed by in-flight SPEC-00000000000000000000000002. Consider `decree commit --implements SPEC-00000000000000000000000002` so the commit links to the SPEC.
+[2m→ exit 1[0m
+[1;32mVALUE:[0m   Governance review that depends on a human remembering every decision → a build gate that fails when a diff collides with the decision corpus.
+[1;33mHONESTY:[0m Reports structural intersection + conflict/stale findings; makes NO judgment about whether the change is correct. Exit 1 means 'a human/agent must look', not 'this is wrong'.

@@ -1,0 +1,38 @@
+
+[1m── The corpus: one decision governing the contested file ──[0m
+[index] rebuilding into .decree/index.sqlite
+[index] decisions=1  refs=0  governs=1  acs=0  commits=0
+[index] git_sync_ms=25
+✓ index rebuilt in 40ms
+
+[1m── This session plans tokens.py — we tell decree session-b also plans it ──[0m
+
+[1;36m$ decree intent-check --plan Edit token storage --files src/auth/tokens.py --other-active-files {"session-b": ["src/auth/tokens.py"]}[0m
+[intent-check] exit 1: findings present (conflicts, live-session overlaps, or stale governance).
+Intent check — pre-PR governance map
+  Plan: Edit token storage
+
+Planned files (1):
+  • src/auth/tokens.py
+
+Governing decisions (1):
+  ▸ SPEC-00000000000000000000000001  implemented  exact  governs src/auth/tokens.py
+    JWT token storage
+
+Stale governance (0):
+  (none)
+
+Unchecked acceptance criteria (0):
+  (none)
+
+Conflicts (0):
+  (none)
+
+Live-session conflicts (1):
+  ⇄ src/auth/tokens.py: also planned by session-b
+
+Recommended actions (1):
+  → isolate_session: src/auth/tokens.py is also planned by active session(s) session-b. Run in a dedicated worktree, or split this file out of one plan, before starting.
+[2m→ exit 1[0m
+[1;32mVALUE:[0m   Two parallel agents edit the same file blind and you reconcile the wreck later → the live collision is flagged before either starts, with an 'isolate_session' recommendation (exit 1).
+[1;33mHONESTY:[0m decree owns NO session state. The caller supplies the other sessions' planned paths; decree only computes the overlap. It reports THAT two sessions claim the file, not who should win.

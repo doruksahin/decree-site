@@ -1,0 +1,30 @@
+
+[1;36m$ decree intent-review --diff change.diff[0m
+[intent-review] exit 1: findings present (conflicts or stale governance).
+Intent review — file:change.diff
+
+Changed paths (1):
+  • src/auth/tokens.py
+
+Governing decisions (2):
+  ▸ SPEC-00000000000000000000000001  implemented  exact  governs src/auth/tokens.py
+    JWT token storage
+  ▸ SPEC-00000000000000000000000002  draft  exact  governs src/auth/tokens.py
+    Token rotation policy
+
+Stale governance (0):
+  (none)
+
+Unchecked acceptance criteria (2):
+  ☐ SPEC-00000000000000000000000002  [Acceptance Criteria]  Rotation job runs on schedule
+  ☐ SPEC-00000000000000000000000002  [Acceptance Criteria]  Old tokens revoked on rotation
+
+Conflicts (1):
+  ✗ src/auth/tokens.py: SPEC-00000000000000000000000001, SPEC-00000000000000000000000002
+
+Recommended actions (4):
+  → check_ac [SPEC-00000000000000000000000002]: SPEC-00000000000000000000000002 has an unchecked AC under 'Acceptance Criteria': Rotation job runs on schedule
+  → check_ac [SPEC-00000000000000000000000002]: SPEC-00000000000000000000000002 has an unchecked AC under 'Acceptance Criteria': Old tokens revoked on rotation
+  → resolve_conflict: src/auth/tokens.py is governed by SPEC-00000000000000000000000001, SPEC-00000000000000000000000002. Decide which decision is authoritative or supersede the others.
+  → add_implements_trailer [SPEC-00000000000000000000000002]: Changes touch files governed by in-flight SPEC-00000000000000000000000002. Consider `decree commit --implements SPEC-00000000000000000000000002` so the commit links to the SPEC.
+[2m→ exit 1[0m
