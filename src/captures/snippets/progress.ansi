@@ -1,0 +1,13 @@
+
+[1;36m$ decree progress[0m
+[progress] loaded 3 documents
+[progress] scope: all documents
+✓ 3/6 primary items complete (50%) across 3 documents
+[progress] use --doc ID, --chain ID, --changed --base REF, or --governs PATH to narrow parallel work
+Scope: all documents
+
+  ADR-00000000000000000000000001   Auth via JWT         accepted  ░░░░░░░░░░   — 
+  PRD-00000000000000000000000001   User Authentication  draft     ███████░░░  67% (2/3 primary)
+  SPEC-00000000000000000000000001  Token Storage API    draft     ███░░░░░░░  33% (1/3 primary)
+
+[2m→ exit 0[0m

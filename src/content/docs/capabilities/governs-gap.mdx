@@ -1,0 +1,88 @@
+---
+title: governs-gap — a file your decision owns but never declared
+description: Surface, at the moment you plan an edit, a file your active decision's own commits keep touching but never added to governs:. Advisory by construction — it never blocks and never feeds why().
+sidebar:
+  label: governs-gap
+  order: 5
+---
+
+import Ansi from '../../../components/Ansi.astro';
+import Callout from '../../../components/Callout.astro';
+import ExitBadge from '../../../components/ExitBadge.astro';
+import BeforeAfter from '../../../components/BeforeAfter.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+**`decree intent-check --under <decision>` flags, at the moment you plan an edit, a
+file your active decision's own commits keep touching but never declared.** You run in a
+governed session; decree watches for the file your decision quietly owns in practice — and
+nudges you to make that ownership real.
+
+{/* ── 2. The signature device: one scenario, two ways ─────────────────────── */}
+<BeforeAfter scenario="You're working under <code>SPEC-…0001</code> and about to edit <code>src/auth/helper.py</code> — a helper its commits keep touching, but it never declared.">
+  <Fragment slot="before">
+    The decision governs `login.py` and nothing else. Its commits keep editing `helper.py`
+    too, so the scope **drifts unnoticed**. You only catch the gap in a quarterly audit — if
+    one ever happens. Until then the `governs:` list quietly lies about what the decision owns.
+  </Fragment>
+  <Fragment slot="after">
+    Pass `--under` to mark a governed session, and "this file is yours in practice but
+    undeclared" surfaces at the exact moment you touch it:
+
+    <Ansi name="snippets/governs-gap" />
+  </Fragment>
+  <Fragment slot="foot">
+    <Callout kind="value">"This file is yours in practice but undeclared" surfaces at the exact moment you touch it — not in a quarterly audit, if ever.</Callout>
+    <Callout kind="honesty">Advisory by construction: `declare_governs` NEVER blocks (exit stays `0`) and NEVER feeds `why()` — it is not a governance fact until a human adds it to `governs:`. Squash-immune (needs `commit_count >= 2`).</Callout>
+  </Fragment>
+</BeforeAfter>
+
+{/* ── 5. The concept ──────────────────────────────────────────────────────── */}
+## How it works
+
+Pass `--under <decision-id>` to mark the session as governed by that decision. If a
+planned or changed file is one the decision's own trailer-linked commits repeat-touch — at
+least two of them — but it doesn't appear in the decision's `governs:`, decree surfaces an
+advisory `governs:` gap. The two-commit floor makes it squash-immune: a single squashed
+commit can't manufacture a suggestion. It is the point-of-change counterpart to `health`'s
+batch suggested-governance audit, and it works the same way on both `intent-check` and
+`intent-review`.
+
+{/* ── 6. Run it ───────────────────────────────────────────────────────────── */}
+## Run it
+
+<Ansi name="snippets/governs-gap" />
+
+The `declare_governs` line is a recommendation, not a verdict. The plan is ungoverned and
+the gap is advisory, so the exit stays `0` either way. decree will not gate your edit on a
+file you haven't declared yet.
+
+{/* ── 7. When you'd reach for this ────────────────────────────────────────── */}
+## When you'd reach for this
+
+- **An agent working in a governed session** — give it `--under` so it learns which files its decision already owns in practice, deterministically.
+- **Catching scope drift at edit time, not audit time** — the gap surfaces the moment you plan to touch the file, not a quarter later.
+- **Keeping a decision's `governs:` honest as the code grows** — close the gap between what the commits do and what the frontmatter claims.
+
+{/* ── 8. Reference (kept separate from the explanation above) ──────────────── */}
+## Flags & exit codes
+
+`--under` is advisory: it never blocks. The exit stays <ExitBadge code={0} /> whether or
+not a `governs:` gap is found — a suggestion is not a finding. An invalid `--under` id is a
+config error and exits <ExitBadge code={2} />.
+
+<details>
+<summary>The `--under` flag</summary>
+
+| Flag | What it does |
+|------|--------------|
+| `--under ID` | Active decision id for a governed session. When a planned file is one this decision's own commits repeat-touch (`>=2`) but it does not declare, surface an advisory `governs:` gap. An invalid id exits `2`. |
+
+`--under` exists on both `intent-check` (the pre-PR planning guard) and `intent-review`
+(the post-diff review), with identical semantics. Use it wherever you already run a
+governed-session check.
+
+</details>
+
+---
+
+Next: [`the lifecycle`](/capabilities/lifecycle/) — create, validate, and track decisions.

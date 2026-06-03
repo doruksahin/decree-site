@@ -2,8 +2,8 @@
 [1m── The corpus: one decision that governs the auth tokens file ──[0m
 [index] rebuilding into .decree/index.sqlite
 [index] decisions=1  refs=0  governs=1  acs=0  commits=0
-[index] git_sync_ms=30
-✓ index rebuilt in 47ms
+[index] git_sync_ms=24
+✓ index rebuilt in 39ms
 
 [1m── Ask which decision governs the file you're about to touch ──[0m
 

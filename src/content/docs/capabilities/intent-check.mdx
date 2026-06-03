@@ -1,0 +1,100 @@
+---
+title: intent-check — catch a collision before you write a line
+description: Check a plan against the decisions that govern the files it will touch — before any diff exists. intent-check surfaces governing decisions, stale governance, unchecked acceptance criteria, and structural conflicts at planning time.
+sidebar:
+  label: intent-check
+  order: 2
+---
+
+import Ansi from '../../../components/Ansi.astro';
+import Callout from '../../../components/Callout.astro';
+import ExitBadge from '../../../components/ExitBadge.astro';
+import BeforeAfter from '../../../components/BeforeAfter.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+**`decree intent-check --plan … --files …` is the pre-code planning guard.** You
+describe the change in a sentence and name the files it will touch, and decree tells you
+which decisions stand in the way — before you have written a single line.
+
+{/* ── 2. The signature device: one scenario, two ways ─────────────────────── */}
+<BeforeAfter scenario="You're about to change how <code>src/auth/tokens.py</code> stores refresh tokens.">
+  <Fragment slot="before">
+    You write the change, push the branch, and open a PR. Only in review does a teammate
+    notice that *two* decisions claim that file — one shipped, one still in-flight with
+    open acceptance criteria. You found out **too late**, after the work was done.
+  </Fragment>
+  <Fragment slot="after">
+    One command, run against the plan, surfaces the collision at planning time:
+
+    <Ansi name="snippets/intent-check-conflict" />
+  </Fragment>
+  <Fragment slot="foot">
+    <Callout kind="value">The two-decision collision, the in-flight SPEC, and its unchecked acceptance criteria show up before you code — not in a review comment after.</Callout>
+    <Callout kind="honesty">intent-check reports the *structural* conflict — two decisions declare the same path. It does **not** judge whether they truly contradict; that semantic call is the agent's or reviewer's job.</Callout>
+  </Fragment>
+</BeforeAfter>
+
+{/* ── 5. The concept ──────────────────────────────────────────────────────── */}
+## How it works
+
+Give intent-check a plan summary and the files the plan will touch. It reports the
+decisions that govern those files, which of them are stale, which acceptance criteria are
+still unchecked, and any structural conflicts — two decisions claiming the same path.
+All of it lands before a diff exists, so you adjust the plan instead of unwinding code.
+
+{/* ── 6. Run it ───────────────────────────────────────────────────────────── */}
+## Run it
+
+<Tabs>
+  <TabItem label="conflict check">
+    Two decisions declare `src/auth/tokens.py`. The in-flight one has unchecked acceptance
+    criteria. intent-check surfaces the conflict and the recommended actions.
+
+    <Ansi name="snippets/intent-check-conflict" />
+  </TabItem>
+  <TabItem label="live-session overlap">
+    `--other-active-files` takes a JSON map of other session ids to the paths they plan to
+    touch. A planned file that overlaps a live session surfaces as a live-session conflict
+    with an `isolate_session` recommendation.
+
+    <Ansi name="snippets/intent-check-isolate" />
+  </TabItem>
+</Tabs>
+
+decree owns **no** session state. You supply the other sessions' planned paths; decree
+only computes the overlap. It reports *that* two sessions claim the file — not who should
+win.
+
+{/* ── 7. When you'd reach for this ────────────────────────────────────────── */}
+## When you'd reach for this
+
+- **Before an agent starts implementing** — hand it the governing decisions and conflicts as deterministic context, not a guess.
+- **Before opening a PR** — gate CI on a clean plan so collisions surface at planning time, not in review.
+- **When two agents or people might touch the same file** — pass their planned paths and catch the live overlap before either writes a line.
+
+{/* ── 8. Reference (kept separate from the explanation above) ──────────────── */}
+## Flags & exit codes
+
+intent-check exits <ExitBadge code={1} /> on findings — structural conflicts, live-session
+overlaps, or stale governance — <ExitBadge code={0} /> when the plan is clean, and
+<ExitBadge code={2} /> on a config error, such as an invalid `--under` id.
+
+<details>
+<summary>All flags</summary>
+
+| Flag | What it does |
+|------|--------------|
+| `--plan TEXT` | One-sentence to one-paragraph description of the planned change. |
+| `--files PATH [PATH ...]` | One or more repo-relative paths the plan will touch. |
+| `--other-active-files JSON` | JSON map of other active session ids to the paths they plan to touch, e.g. `'{"session-b": ["src/foo.py"]}'`. Planned files overlapping a live session surface as live-session conflicts. |
+| `--under ID` | Active decision id. When a planned file is one this decision's own commits repeat-touch (≥2) but it does not declare, surface an advisory `governs:` gap. Invalid id exits `2`. |
+| `--json` | Emit JSON for programmatic consumers. |
+| `--project PATH` | Operate on the project at this path (default: cwd). |
+| `--with-abstention` | Route governance lookups through the calibrated method. |
+| `--target-precision P` | Desired precision floor for non-abstain responses. |
+
+</details>
+
+---
+
+Next: [`intent-review`](/capabilities/intent-review/) — gate the diff *after* you code.

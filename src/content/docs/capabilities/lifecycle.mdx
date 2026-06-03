@@ -1,0 +1,81 @@
+---
+title: the lifecycle — create, validate, and track decisions
+description: "The deterministic core: lint validates every reference and section, status enforces lifecycle transitions, progress tracks completion, and index + graph generate views from the corpus."
+sidebar:
+  label: the lifecycle
+  order: 6
+---
+
+import Ansi from '../../../components/Ansi.astro';
+import Callout from '../../../components/Callout.astro';
+import ExitBadge from '../../../components/ExitBadge.astro';
+import BeforeAfter from '../../../components/BeforeAfter.astro';
+import LifecycleChain from '../../../components/LifecycleChain.astro';
+
+**Before decree can tell you which decision governs a file, the decisions have to be
+real: validated, linked, and tracked.** That is the rest of the toolkit — the
+deterministic core that keeps a folder of markdown from rotting into a folder of lies.
+
+<LifecycleChain />
+
+<BeforeAfter scenario="Your team writes decisions as markdown — a PRD, an ADR, a SPEC — in a folder.">
+  <Fragment slot="before">
+    A SPEC references an ADR that was archived months ago. Another points at an ID that
+    **never existed**. Statuses say "draft" on work that shipped. Nothing checks any of
+    it, so the corpus drifts until **nobody trusts it**.
+  </Fragment>
+  <Fragment slot="after">
+    decree validates every cross-reference and required section in one pass:
+
+    <Ansi name="snippets/lint" />
+  </Fragment>
+  <Fragment slot="foot">
+    <Callout kind="value">A folder of decisions becomes a corpus you can trust — broken links, missing sections, and illegal transitions fail loudly instead of rotting silently.</Callout>
+    <Callout kind="honesty">`lint` checks structure — references resolve, sections exist, transitions are legal. It does not judge whether a decision is *good*. Staleness is direct-only: a SPEC pointing at a superseded ADR is flagged; the chain beyond it is not.</Callout>
+  </Fragment>
+</BeforeAfter>
+
+## lint — validate everything
+
+`decree lint` checks the whole corpus: dangling references, stale links to dead
+statuses, self-references, duplicate IDs, supersede symmetry, and missing required
+sections. It exits <ExitBadge code={1} /> when anything fails, so it runs in CI as a
+gate on the decision corpus itself.
+
+<Ansi name="snippets/lint" />
+
+## progress — track completion
+
+`decree progress` scans every document for `- [x]` / `- [ ]` checkboxes and reports
+completion per decision, with deferred items separated from primary progress. Scope it
+to a single doc, a chain, changed files, or a governed path for parallel work.
+
+<Ansi name="snippets/progress" />
+
+## status — enforce transitions
+
+`decree status <id> <action>` moves a decision through its lifecycle, and only legal
+transitions are allowed — `draft → approved → implemented`, never a skipped step. A
+supersede links both documents automatically: the old one gains `superseded-by`, the
+new one gains `supersedes`. The transitions are defined per type in `decree.toml`, so
+the rules are yours, not decree's.
+
+## index & graph — generate views
+
+`decree index regenerate` writes a sorted table per decision type, and `decree index
+rebuild` refreshes the SQLite query cache that `why`, `health`, and the intent checks
+read from. `decree graph` appends Mermaid diagrams — decision timelines, supersede
+chains, status distributions, C4 container views — below a generated marker in each
+type's `index.md`. Both are derived from the corpus, so they never drift from it.
+
+## When you'd reach for this
+
+- **In CI** — gate every push with `decree lint`, so a broken reference fails the build.
+- **At a standup** — `decree progress` shows where each decision actually stands.
+- **On every transition** — `decree status` makes "approved" mean something.
+
+---
+
+The full configuration schema, every lint rule, and the graph types are documented in
+the [decree repository](https://github.com/doruksahin/decree). Next: see it all run in
+order — [decree by example](/examples/).

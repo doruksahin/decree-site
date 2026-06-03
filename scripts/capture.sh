@@ -226,12 +226,131 @@ Implements: SPEC-00000000000000000000000001"
     --under SPEC-00000000000000000000000001
 }
 
+# Corpus F — a small but valid PRD -> ADR -> SPEC corpus with cross-refs and
+#            checkboxes  (lifecycle: lint, progress, status)
+gen_lifecycle() {
+  q make_demo_repo
+  cat > decree.toml <<'TOML'
+[types.prd]
+dir = "decree/prd"
+prefix = "PRD"
+digits = 3
+initial_status = "draft"
+statuses = ["draft", "approved", "implemented", "archived"]
+required_sections = ["Overview"]
+[types.prd.transitions]
+draft = ["approved"]
+approved = ["implemented", "archived"]
+implemented = ["archived"]
+archived = []
+[types.prd.actions]
+approve = "approved"
+implement = "implemented"
+
+[types.adr]
+dir = "decree/adr"
+prefix = "ADR"
+digits = 3
+initial_status = "proposed"
+statuses = ["proposed", "accepted", "superseded"]
+required_sections = ["Overview"]
+[types.adr.transitions]
+proposed = ["accepted"]
+accepted = ["superseded"]
+superseded = []
+[types.adr.actions]
+accept = "accepted"
+
+[types.spec]
+dir = "decree/spec"
+prefix = "SPEC"
+digits = 3
+initial_status = "draft"
+statuses = ["draft", "approved", "implemented"]
+required_sections = ["Overview"]
+[types.spec.transitions]
+draft = ["approved"]
+approved = ["implemented"]
+implemented = []
+[types.spec.actions]
+approve = "approved"
+implement = "implemented"
+TOML
+  mkdir -p decree/prd decree/adr decree/spec src/auth
+  cat > decree/prd/prd-00000000000000000000000001-user-auth.md <<'EOF'
+---
+id: PRD-00000000000000000000000001
+status: draft
+date: 2026-05-10
+---
+
+# PRD-00000000000000000000000001 User Authentication
+
+## Overview
+
+Users sign in with email and password; sessions expire.
+
+## Requirements
+
+- [x] Email + password sign-in
+- [x] Session expiry
+- [ ] Passwordless option
+EOF
+  cat > decree/adr/adr-00000000000000000000000001-jwt.md <<'EOF'
+---
+id: ADR-00000000000000000000000001
+status: accepted
+date: 2026-05-10
+references:
+  - PRD-00000000000000000000000001
+---
+
+# ADR-00000000000000000000000001 Auth via JWT
+
+## Overview
+
+Use signed JWTs for session tokens.
+EOF
+  cat > decree/spec/spec-00000000000000000000000001-token-storage.md <<'EOF'
+---
+id: SPEC-00000000000000000000000001
+status: draft
+date: 2026-05-10
+references:
+  - PRD-00000000000000000000000001
+  - ADR-00000000000000000000000001
+governs:
+  - src/auth/tokens.py
+---
+
+# SPEC-00000000000000000000000001 Token Storage API
+
+## Overview
+
+Tokens are stored hashed at rest.
+
+## Acceptance Criteria
+
+- [x] Hash tokens before persistence
+- [ ] Rotate signing keys
+- [ ] Revoke on logout
+EOF
+  echo "def store(token): ..." > src/auth/tokens.py
+  q git add -A; q git commit -qm "init: corpus"
+  q "$DECREE" index rebuild
+  snip lint.ansi lint
+  snip progress.ansi progress
+  # NB: `status` regenerates indexes and prints absolute (temp) paths — that's
+  # non-deterministic, so it's described in prose on the site rather than captured.
+}
+
 # Each in a subshell so make_demo_repo's cd + cleanup trap stay isolated.
 ( gen_why )
 ( gen_conflict )
 ( gen_isolate )
 ( gen_health )
 ( gen_governs_gap )
+( gen_lifecycle )
 
 echo
 echo "snippets:"

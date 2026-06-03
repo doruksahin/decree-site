@@ -1,0 +1,92 @@
+---
+title: health — has a decision's declared scope rotted?
+description: "Surface governance drift — where a decision's declared governs: scope has diverged from where the code actually changed. health separates a finding you can gate on from an advisory it never confuses with one."
+sidebar:
+  label: health
+  order: 4
+---
+
+import Ansi from '../../../components/Ansi.astro';
+import Callout from '../../../components/Callout.astro';
+import ExitBadge from '../../../components/ExitBadge.astro';
+import BeforeAfter from '../../../components/BeforeAfter.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+**`decree health` surfaces governance drift — where a decision's declared scope has
+diverged from where the code actually changed.** A `governs:` list is a claim. Over
+months, the claim and the commits drift apart. `health` measures the gap and tells you
+which half is a finding and which half is only a hint.
+
+{/* ── 2. The signature device: one scenario, two ways ─────────────────────── */}
+<BeforeAfter scenario="Months in: a SPEC still claims it governs <code>src/auth/legacy_sso.py</code> — but no commit that cited it ever touched that file.">
+  <Fragment slot="before">
+    The `governs:` list quietly becomes **fiction**. The SPEC still names a file its
+    own history never touched, while its commits keep editing a helper it never
+    declared. You'd only catch it in a quarterly audit — **if ever**.
+  </Fragment>
+  <Fragment slot="after">
+    decree separates a finding from an advisory and never confuses the two:
+
+    <Ansi name="snippets/health" />
+  </Fragment>
+  <Fragment slot="foot">
+    <Callout kind="value">Dead governance — a declared path no trailer-linked commit ever touched — is a finding you can gate on. Scope the code grew into but never declared is advisory, surfaced beside it, kept apart from it.</Callout>
+    <Callout kind="honesty">The signals read the `Implements:` trailer convention: deterministic to compute, not certain. A SPEC with zero trailered commits is reported "unobserved, not dead" — fail-safe. Suggested governance never feeds `why()`.</Callout>
+  </Fragment>
+</BeforeAfter>
+
+{/* ── 5. The concept ──────────────────────────────────────────────────────── */}
+## How it works
+
+`health` surfaces four git-derived signals: **stale decisions** (declared paths
+churned while the decision sat still), **ungoverned hotspots** (high-churn files no
+decision owns), **dead governance** (declared `governs:` paths no trailer-linked commit
+ever touched), and **suggested governance** (files a decision's own commits repeat-touch
+but never declare). It is read-only and deterministic — it computes over the
+`Implements:/Refs:/Fixes:` trailer convention and git history, and never writes a thing.
+
+{/* ── 6. Run it ───────────────────────────────────────────────────────────── */}
+## Run it
+
+<Ansi name="snippets/health" />
+
+Read the split in the output. **Dead governance** lists `src/auth/legacy_sso.py` — a
+declared path the SPEC's two linked commits never touched, so it counts as a finding.
+**Suggested governance** lists `src/auth/helper.py` — a file those same commits keep
+editing but the SPEC doesn't claim, surfaced as advisory and marked "does not affect
+exit status."
+
+{/* ── 7. When you'd reach for this ────────────────────────────────────────── */}
+## When you'd reach for this
+
+- **A periodic governance audit** — sweep the corpus for `governs:` lists that have rotted into fiction since they were written.
+- **A CI guard against `governs:` rot** — fail the build when a decision declares scope its own commits abandoned.
+- **Onboarding to a codebase** — see where the map and the territory drifted before you trust either one.
+
+{/* ── 8. Reference (kept separate from the explanation above) ──────────────── */}
+## Flags & exit codes
+
+`health` exits <ExitBadge code={1} /> when stale, ungoverned-hotspot, or dead-governance
+findings exist. Suggested governance is advisory: it is an <ExitBadge code={0} />
+contribution and never affects the exit. A config error exits <ExitBadge code={2} />.
+
+<details>
+<summary>All flags</summary>
+
+| Flag | What it does |
+|------|--------------|
+| `--json` | Emit JSON for programmatic consumers (uncapped — the full advisory + findings set). |
+| `--project PATH` | Operate on the project at this path (default: cwd). |
+| `--threshold-commits N` | Stale / hotspot commit threshold (default: 10, or the `[health]` block). |
+| `--threshold-days N` | Ungoverned-hotspot lookback window in days (default: 30). |
+
+</details>
+
+The signals are convention-bounded — they need `decree commit` trailer discipline to
+see your history. For why they are trustworthy *because* they refuse to guess, read the
+[health signals reference](https://github.com/doruksahin/decree/blob/main/docs/health-signals.md).
+
+---
+
+Next: [`governs-gap`](/capabilities/governs-gap/) — the point-of-change counterpart to
+this batch audit.

@@ -1,0 +1,109 @@
+---
+title: intent-review — gate a diff against governance
+description: Take a diff and report which decisions govern the changed paths, what's stale, which acceptance criteria are unchecked, and structural conflicts. A deterministic, exit-coded gate for CI.
+sidebar:
+  label: intent-review
+  order: 3
+---
+
+import Ansi from '../../../components/Ansi.astro';
+import Callout from '../../../components/Callout.astro';
+import ExitBadge from '../../../components/ExitBadge.astro';
+import BeforeAfter from '../../../components/BeforeAfter.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+**`decree intent-review --diff …` takes a diff and reports which decisions govern
+the changed paths, what's stale, which acceptance criteria are unchecked, and
+structural conflicts — a deterministic, exit-coded gate that runs in CI before a
+human reviews.** It is the after-you-code counterpart to `intent-check`: the diff
+already exists, and you ask whether it collides with the corpus.
+
+{/* ── 2. The signature device: one scenario, two ways ─────────────────────── */}
+<BeforeAfter scenario="A PR changes <code>src/auth/tokens.py</code>. Does the diff collide with any decision?">
+  <Fragment slot="before">
+    Governance review depends on a human remembering every decision. Two SPECs
+    claim this path; one is implemented, one is still a draft. The reviewer who
+    knew that **nobody remembers** has moved teams, so the conflict slips through
+    and ships.
+  </Fragment>
+  <Fragment slot="after">
+    A build gate that fails when a diff collides with the corpus — before a human
+    looks:
+
+    <Ansi name="snippets/intent-review-conflict" />
+  </Fragment>
+  <Fragment slot="foot">
+    <Callout kind="value">A build gate fails when a diff collides with the decision corpus — instead of a reviewer having to remember every decision that touches the path.</Callout>
+    <Callout kind="honesty">`intent-review` reports structural intersection plus conflict and stale findings. It makes no judgment about whether the change is *correct*. Exit `1` means "a human or agent must look", not "this is wrong".</Callout>
+  </Fragment>
+</BeforeAfter>
+
+{/* ── 5. The concept ──────────────────────────────────────────────────────── */}
+## How it works
+
+`intent-review` accepts a diff — a file, stdin, a `--diff-base` ref, or one
+auto-detected from your git staged and working-tree changes. It intersects the
+changed paths with the decision corpus, then reports the governing decisions,
+stale governance, unchecked acceptance criteria, and structural conflicts. It
+exits non-zero when any of those findings exist, so a CI step can gate on it.
+
+{/* ── 6. Run it ───────────────────────────────────────────────────────────── */}
+## Run it
+
+The canonical invocation: write the diff to a file, then review it against
+governance.
+
+<Ansi name="snippets/intent-review-conflict" />
+
+The diff can come from anywhere. The findings are the same regardless of source —
+only the input differs.
+
+<Tabs>
+  <TabItem label="--diff <file>">
+    Review a diff you've already written to a file (or `-` to read it from
+    stdin). This is the form a CI job uses after writing the PR diff to disk.
+
+    <Ansi name="snippets/intent-review-conflict" />
+  </TabItem>
+  <TabItem label="--diff-base <ref>">
+    Skip the file: pass a git ref and `intent-review` runs `git diff
+    <ref>...HEAD` for you, then reviews the result. With no diff source at all,
+    it auto-detects from your staged and working-tree changes.
+  </TabItem>
+</Tabs>
+
+When the changed paths intersect nothing contested — no conflicts, no stale
+governance — the gate passes and exits `0`. A clean run is a real answer, not a
+silent one.
+
+{/* ── 7. When you'd reach for this ────────────────────────────────────────── */}
+## When you'd reach for this
+
+- **As a CI gate on every PR** — fail the build when a diff collides with the corpus, so the conflict surfaces before anyone reads the code.
+- **Before requesting human review** — run it on your own branch and resolve the findings first, so the reviewer sees a diff that already passed the gate.
+- **In an agent loop, after it writes a diff** — feed the changed paths back through the corpus deterministically, and let a non-zero exit say "stop and look".
+
+{/* ── 8. Reference (kept separate from the explanation above) ──────────────── */}
+## Flags & exit codes
+
+`intent-review` is a gate, not a query. It exits <ExitBadge code={1} /> when
+conflicts or stale findings exist, <ExitBadge code={0} /> when the changed paths
+are clean, and <ExitBadge code={2} /> on a config error (such as an invalid
+`--under` id).
+
+<details>
+<summary>All flags</summary>
+
+| Flag | What it does |
+|------|--------------|
+| `--diff PATH` | Unified-diff file path, or `-` to read the diff from stdin. |
+| `--diff-base REF` | Run `git diff <REF>...HEAD` to compute the diff. |
+| `--under ID` | Active decision id of a governed session. When a changed file is one this decision's own commits repeat-touch (≥2) but does not declare, surface an advisory `governs:` gap. Needs a structured diff; an invalid id exits `2`. |
+| `--json` | Emit JSON for programmatic consumers. |
+| `--project PATH` | Operate on the project at this path (default: cwd). |
+
+</details>
+
+---
+
+Next: [`health`](/capabilities/health/) — has a decision's scope rotted over time?
