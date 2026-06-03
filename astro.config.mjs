@@ -5,8 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  // Placeholder; the site is not deployed yet (deploy = local for now).
-  site: 'https://decree.dev',
+  site: 'https://decree.doruk.uk',
   integrations: [
     starlight({
       title: 'decree',
