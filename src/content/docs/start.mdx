@@ -1,0 +1,111 @@
+---
+title: Start here
+description: Install decree, define your decision types, and wire it into the loop your agents and CI run.
+sidebar:
+  order: 0
+---
+
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+
+decree is a Python CLI. It reads markdown decisions and a `decree.toml`, and answers from
+what's declared. There is no service to run and no model to call.
+
+## Install
+
+<Tabs>
+  <TabItem label="uv">
+    ```bash
+    uv tool install decree
+    decree --version
+    ```
+  </TabItem>
+  <TabItem label="pip">
+    ```bash
+    pip install decree
+    decree --version
+    ```
+  </TabItem>
+</Tabs>
+
+## Set up a project
+
+<Steps>
+
+1. **Define your decision types** in `decree.toml` at the project root. Types are
+   yours — prefix, statuses, transitions, and required sections are all config.
+
+   ```toml title="decree.toml"
+   [types.spec]
+   dir = "decree/spec"
+   prefix = "SPEC"
+   initial_status = "draft"
+   statuses = ["draft", "approved", "implemented"]
+   required_sections = ["Overview"]
+
+   [types.spec.transitions]
+   draft = ["approved"]
+   approved = ["implemented"]
+   implemented = []
+
+   [types.spec.actions]
+   approve = "approved"
+   implement = "implemented"
+   ```
+
+   Not limited to one type — define `prd`, `adr`, `spec`, or anything your team uses.
+   The full schema is in the [repository docs](https://github.com/doruksahin/decree).
+
+2. **Create a decision.** New files are named `{id}-{slug}.md`, so parallel branches
+   never fight over the next number.
+
+   ```bash
+   decree new spec "Token Storage API"
+   ```
+
+3. **Declare what it governs** in the frontmatter, so `why` and the intent checks can
+   find it:
+
+   ```yaml title="decree/spec/spec-….md"
+   governs:
+     - src/auth/tokens.py
+   ```
+
+4. **Build the query index** that `why`, `health`, and the intent checks read from:
+
+   ```bash
+   decree index rebuild
+   ```
+
+</Steps>
+
+## The loop agents and CI run
+
+decree is built to be called around every change — by a person, and by an LLM agent
+editing the code:
+
+<Steps>
+
+1. **Before coding**, map the file and check the plan:
+
+   ```bash
+   decree why src/auth/tokens.py
+   decree intent-check --plan "rotate refresh tokens" --files src/auth/tokens.py
+   ```
+
+2. **After coding**, gate the diff before review:
+
+   ```bash
+   decree intent-review --diff change.diff
+   ```
+
+3. **Gate on the exit code.** `1` is a finding to stop on; `0` is clean or advisory; `2`
+   is a config error. Add `--json` anywhere for structured output an agent can parse.
+
+</Steps>
+
+## Keep going
+
+- See it run end to end: [decree by example](/examples/).
+- Read each capability in depth: [`why`](/capabilities/why/), [`intent-check`](/capabilities/intent-check/), [`intent-review`](/capabilities/intent-review/), [`health`](/capabilities/health/).
+- Full configuration, MCP integration, and the agent contract live in the
+  [decree repository](https://github.com/doruksahin/decree).

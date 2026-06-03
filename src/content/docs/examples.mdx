@@ -1,0 +1,99 @@
+---
+title: decree by example
+description: Six runnable scenarios that follow one change through its whole life — before you code, while you code, after you code, and over time. Every terminal is real decree output.
+---
+
+import Ansi from '../../components/Ansi.astro';
+import ExitBadge from '../../components/ExitBadge.astro';
+
+Six scenarios follow **one change** — editing a file under `src/auth/` — through its
+whole life. Each runs real `decree` commands against a throwaway git corpus and prints
+the **real** output. Nothing below is mocked; every block is captured from an actual run.
+
+Each scenario ends on its own `VALUE:` line (what you gain) and `HONESTY:` line (where
+decree refuses to overclaim). The exit code is the contract:
+
+- <ExitBadge code={1} /> — a finding you can gate CI on: a conflict, a live overlap, dead governance.
+- <ExitBadge code={0} /> — clean, or advisory-only. Suggestions never block.
+- <ExitBadge code={2} /> — a config error, kept apart from findings on purpose.
+
+You can run the whole arc yourself:
+
+```bash
+git clone https://github.com/doruksahin/decree && cd decree
+bash examples/run-all.sh
+```
+
+---
+
+## Before you code
+
+### 1 · Which decision explains this file?
+
+Before editing `src/auth/tokens.py`, ask what governs it — and watch decree abstain on a
+file nothing governs. <ExitBadge code={0} />
+
+<Ansi name="01-why" />
+
+### 2 · Will my plan collide with a decision?
+
+Two decisions claim the same file, and the in-flight one has open acceptance criteria.
+decree surfaces it at planning time, not in code review. <ExitBadge code={1} />
+
+<Ansi name="02-intent-check-conflict" />
+
+---
+
+## While you code
+
+### 3 · Is another agent about to touch this same file?
+
+Two agent sessions independently plan the same file. Given the other live session's
+planned paths, decree flags the overlap before either starts. <ExitBadge code={1} />
+
+<Ansi name="03-parallel-sessions" />
+
+---
+
+## After you code
+
+### 4 · Does this diff collide with governance?
+
+The code is written and a diff exists. Before a human reviews, gate the diff against the
+decision corpus — a deterministic, CI-shaped pass. <ExitBadge code={1} />
+
+<Ansi name="04-intent-review" />
+
+---
+
+## Over time
+
+### 5 · Did the decision's declared scope rot?
+
+Months in, a SPEC still claims a file no trailer-linked commit ever touched, while its
+commits keep editing a helper it never declared. decree flags the dead governance (a
+finding) and, separately, the suggested governance (advisory). <ExitBadge code={1} />
+
+<Ansi name="05-health-dead-governance" />
+
+---
+
+## While you code, governed
+
+### 6 · Am I editing a file my decision doesn't own?
+
+In a governed session under a SPEC, you plan to edit a helper the SPEC's own commits keep
+touching but never declared. decree nudges you to declare it — advisory, never blocking.
+<ExitBadge code={0} />
+
+<Ansi name="06-governs-gap" />
+
+---
+
+That's the whole arc: **before** you code (`why`, `intent-check`), **while** you code
+(parallel `intent-check`, governed `--under`), **after** you code (`intent-review`), and
+**over time** (`health`). Each answer comes only from declared facts — and each scenario
+names its own boundary. That asymmetry, finding versus advisory, is the point.
+
+Start from [the capabilities](/capabilities/why/), or [install decree](/start/) and run
+the arc yourself.

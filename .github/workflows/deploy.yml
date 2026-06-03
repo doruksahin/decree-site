@@ -1,0 +1,42 @@
+# GitHub Pages deploy for decree-site — DISABLED by default.
+#
+# The site builds locally for now. This workflow runs ONLY on manual dispatch.
+# To enable continuous deploy:
+#   1. Uncomment the `push` trigger below.
+#   2. Repo Settings → Pages → Build and deployment → Source: "GitHub Actions".
+#   3. If serving from a project subpath (e.g. https://<user>.github.io/decree-site/),
+#      set `site` and `base` in astro.config.mjs accordingly.
+name: Deploy site
+
+on:
+  workflow_dispatch: {}
+  # push:
+  #   branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: withastro/action@v3
+        with:
+          node-version: 22
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

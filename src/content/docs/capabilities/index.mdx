@@ -1,0 +1,37 @@
+---
+title: Capabilities
+description: What decree does — one page per capability, each answering a single question about the life of a change.
+sidebar:
+  label: Overview
+  order: 0
+---
+
+import CapabilityCard from '../../../components/CapabilityCard.astro';
+
+Each capability answers one question about a change — and abstains, deterministically,
+when it has no declared answer. They compose into the loop a person or an agent runs
+around every edit.
+
+<div class="dc-cardgrid">
+  <CapabilityCard title="why" cmd="decree why <file>" href="/capabilities/why/">
+    Which decision explains this file? Map any path to the decisions that govern it.
+  </CapabilityCard>
+  <CapabilityCard title="intent-check" cmd="decree intent-check" href="/capabilities/intent-check/">
+    Will my plan collide with a decision? Catch it before you write a line.
+  </CapabilityCard>
+  <CapabilityCard title="intent-review" cmd="decree intent-review --diff" href="/capabilities/intent-review/">
+    Does this diff collide with governance? A CI-shaped gate after you code.
+  </CapabilityCard>
+  <CapabilityCard title="health" cmd="decree health" href="/capabilities/health/">
+    Has a decision's declared scope rotted? Findings and advisories, kept apart.
+  </CapabilityCard>
+  <CapabilityCard title="governs-gap" cmd="decree intent-check --under" href="/capabilities/governs-gap/">
+    A file your decision owns but never declared — surfaced at edit time, advisory.
+  </CapabilityCard>
+  <CapabilityCard title="the lifecycle" cmd="decree lint" href="/capabilities/lifecycle/">
+    Create, validate, and track decisions: lint, status, progress, index, graph.
+  </CapabilityCard>
+</div>
+
+New here? Start with [`why`](/capabilities/why/), or watch all six run in order in
+[decree by example](/examples/).

@@ -1,49 +1,69 @@
-# Starlight Starter Kit: Basics
+# decree-site
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+The pitch + capability website for [`decree`](https://github.com/doruksahin/decree) —
+a CLI for the software-decision lifecycle. Terminal-forward, dark, and built on
+[Astro Starlight](https://starlight.astro.build/).
 
-```
-npm create astro@latest -- --template starlight
-```
+Its defining discipline: **every terminal block on the site is real `decree` output**,
+captured from an actual run by `scripts/capture.sh`. Nothing is mocked.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Develop
 
-## 🚀 Project Structure
-
-Inside of your Astro + Starlight project, you'll see the following folders and files:
-
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
+```bash
+npm install
+npm run dev        # local dev server (http://localhost:4321)
+npm run build      # static build into dist/
+npm run preview    # serve the built site
 ```
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+Requires Node 22+ (Astro 6).
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+## Regenerate the terminal output
 
-Static assets, like favicons, can be placed in the `public/` directory.
+The `.ansi` files under `src/captures/` are generated, never hand-edited. To refresh
+them from the real CLI (e.g. after a decree output change):
 
-## 🧞 Commands
+```bash
+# needs `decree` on PATH (or DECREE=/path/to/decree) and the decree repo as a sibling
+bash scripts/capture.sh
+```
 
-All commands are run from the root of the project, from a terminal:
+It runs the six `examples/` scenarios into `src/captures/0N-*.ansi` (used by
+`/examples/`) and focused single commands into `src/captures/snippets/*.ansi` (used by
+the landing and capability pages). Captures use pinned IDs so the structural output is
+stable across runs. Override the binary or examples location:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+```bash
+DECREE=../decree/.venv/bin/decree EX_DIR=../decree/examples bash scripts/capture.sh
+```
 
-## 👀 Want to learn more?
+## Structure
 
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+```
+src/
+  captures/            real captured decree output (.ansi) — generated, do not edit
+  components/          Ansi, BeforeAfter, Callout, ExitBadge, CapabilityCard, LifecycleChain
+  content/docs/
+    index.mdx          landing / pitch
+    start.mdx          install + the agent loop
+    examples.mdx       the six scenarios, in the before -> while -> after -> over-time arc
+    capabilities/      one page per capability (the 9-section spine)
+  styles/              global.css (tokens, dark default) + components.css
+scripts/capture.sh     regenerates src/captures from real decree runs
+docs/plans/            the design + implementation plan this site was built from
+```
+
+How the real ANSI renders: `Ansi.astro` loads a `.ansi` file and hands it to Expressive
+Code's built-in `ansi` language inside a terminal frame. Terminal frames are always
+dark; the site defaults to dark via a small theme seed in `astro.config.mjs`.
+
+## Deploy
+
+Not wired by default (the site builds locally for now). A GitHub Pages workflow is
+included but **disabled** — see `.github/workflows/deploy.yml`. It runs only on manual
+dispatch until you enable the `push` trigger and set the repository's Pages source to
+"GitHub Actions". `npm run build` produces a fully static `dist/` deployable anywhere.
+
+## License
+
+MIT, matching decree.
