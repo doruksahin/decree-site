@@ -1,0 +1,25 @@
+---
+/**
+ * Two-column landing hero: copy on the left, a real terminal on the right so the
+ * "money shot" lands in the first viewport. Slots: actions, install, note, demo.
+ * title/tagline accept HTML (for inline emphasis).
+ */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  tagline: string;
+}
+const { eyebrow, title, tagline } = Astro.props;
+---
+
+<section class="dc-hero">
+  <div class="dc-hero-copy">
+    {eyebrow && <p class="dc-hero-eyebrow">{eyebrow}</p>}
+    <h1 class="dc-hero-title" set:html={title} />
+    <p class="dc-hero-tagline" set:html={tagline} />
+    <div class="dc-hero-actions"><slot name="actions" /></div>
+    <div class="dc-hero-install"><slot name="install" /></div>
+    <p class="dc-hero-note"><slot name="note" /></p>
+  </div>
+  <div class="dc-hero-demo"><slot name="demo" /></div>
+</section>

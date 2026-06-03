@@ -1,0 +1,200 @@
+---
+title: decree for agents & CI
+description: A deterministic check an agent runs before and after every edit — the exit code gates the loop. Over MCP, eight JSON tools. In Claude Code, plugin skills.
+sidebar:
+  label: For agents & CI
+  order: 1
+---
+
+import Callout from '../../components/Callout.astro';
+import ExitBadge from '../../components/ExitBadge.astro';
+import CapabilityCard from '../../components/CapabilityCard.astro';
+import { Steps, CardGrid, Card } from '@astrojs/starlight/components';
+
+**An agent edits code it has no memory of deciding.** It never sat in the meeting. It
+never read the PR thread. It sees the file, not the reason the file is the way it is. So
+it guesses — and a guess that ships is a decision nobody made.
+
+decree closes that gap. It gives the agent one deterministic check to run before an edit
+and one to run after, both answering only from declared facts. The check returns an exit
+code, and the exit code gates the loop.
+
+## The loop
+
+Run this in an agent session or a CI job. Every step is a real command.
+
+<Steps>
+
+1. **Validate the corpus.** Catch a malformed or dangling decision before you trust it.
+
+   ```bash
+   decree lint
+   ```
+
+   A finding exits <ExitBadge code={1} />. Stop and fix it first.
+
+2. **Rebuild the derived index.** Frontmatter is authoring truth; `.decree/index.sqlite`
+   is a cache. Rebuild it after any corpus change, or the query tools refuse to answer.
+
+   ```bash
+   decree index rebuild
+   ```
+
+3. **Read the drift before you plan.** Stale decisions, ungoverned hotspots, dead
+   governance, and advisory suggestions — surfaced once, up front.
+
+   ```bash
+   decree health --json
+   ```
+
+   Dead governance is a finding and exits <ExitBadge code={1} />. Resolve it before it
+   compounds. Suggested governance is advisory and exits <ExitBadge code={0} />.
+
+4. **Check intent before you write a line.** State the plan and the files. decree returns
+   the governing decisions and any structural conflict.
+
+   ```bash
+   decree intent-check --plan "add token rotation" --files src/auth/tokens.py --json
+   ```
+
+   Working alongside other live sessions? Pass their planned paths to get `live_conflicts`.
+   In a governed session, pass `--under` to get `governs_gaps` — files the decision
+   repeat-touches but doesn't declare.
+
+   ```bash
+   decree intent-check --plan "add token rotation" --files src/auth/tokens.py \
+     --other-active-files '{"session-b": ["src/auth/tokens.py"]}' \
+     --under SPEC-01KT22NMS0D19VMD8VPK4D2MNX --json
+   ```
+
+5. **Resolve the recommended action before implementing.** If the report says
+   `draft_adr_first`, `update_spec_first`, `resolve_conflict_first`, or `isolate_session`,
+   do that first. For `isolate_session`, run in a dedicated worktree or split the
+   overlapping file out of one plan.
+
+6. **Review intent after the code exists.** Same governance corpus, now against the diff.
+
+   ```bash
+   decree intent-review --json
+   ```
+
+   It also accepts `--under` for point-of-change `governs_gaps`.
+
+7. **Lint again, then leave a trail.** Re-validate after touching decree documents, and
+   write a changelog fragment while the context is fresh.
+
+   ```bash
+   decree lint
+   uv run towncrier create +.feature --content "Add token rotation under SPEC-…"
+   ```
+
+</Steps>
+
+The gate is the exit code. `intent-check` and `intent-review` are queries and exit
+<ExitBadge code={0} /> whether or not they find a conflict — your CI job decides what to
+do with the JSON. `lint` and dead governance exit <ExitBadge code={1} />, which is what
+you fail a build on. A broken `decree.toml` exits <ExitBadge code={2} />.
+
+## Over MCP
+
+`decree mcp serve` exposes the query and analysis surface to an agent over stdio. Eight
+tools, all returning JSON. Every tool is read-only except `report`.
+
+The payloads are identical to the CLI `--json` output — same formatter, same schema. The
+MCP tools and the CLI never diverge.
+
+<CardGrid>
+  <Card title="why" icon="information">
+    Governing decisions for a file, from declared `governs:`.
+  </Card>
+  <Card title="refs" icon="random">
+    Reverse reference graph for one decision.
+  </Card>
+  <Card title="stale" icon="warning">
+    Decisions whose referenced files have moved past them.
+  </Card>
+  <Card title="health" icon="approve-check">
+    Four signals — stale decisions, ungoverned hotspots, dead governance (a finding, exit 1), suggested governance (advisory, exit 0, never feeds `why`).
+  </Card>
+  <Card title="intent_check" icon="rocket">
+    Pre-code. Accepts `other_active_files` (`{session_id: [paths]}`) → `live_conflicts`, and `under` → `governs_gaps`.
+  </Card>
+  <Card title="intent_review" icon="seti:diff">
+    Post-code diff against the same corpus. Also accepts `under` for `governs_gaps`.
+  </Card>
+  <Card title="progress" icon="bars">
+    Acceptance-criteria completion for a doc, a chain, or the whole corpus.
+  </Card>
+  <Card title="report" icon="document">
+    Regenerate completion reports. The only write tool; supports `dry_run`.
+  </Card>
+</CardGrid>
+
+A query result is a shape an agent can branch on directly:
+
+```json
+{
+  "matches": [
+    {
+      "document_id": "SPEC-01KT22NMS0D19VMD8VPK4D2MNX",
+      "status": "implemented",
+      "governs": ["src/auth/tokens.py"]
+    }
+  ],
+  "conflicts": [],
+  "live_conflicts": []
+}
+```
+
+`matches` empty means no decision governs the path. `conflicts` empty means no collision.
+Both are valid answers — read the next section.
+
+## In Claude Code
+
+decree ships as a Claude Code plugin with skills for AI-assisted document work.
+
+| Skill | What it does |
+|-------|--------------|
+| `/decree:init` | Scaffold a `decree/` folder with working examples. |
+| `/decree:prd` | Create a PRD with section guidance and lint validation. |
+| `/decree:adr` | Create an ADR with reference discovery across existing docs. |
+| `/decree:spec` | Create a SPEC with stale-reference warnings. |
+| `/decree:lint` | Validate all documents, creating a task per error found. |
+| `/decree:ddd` | Check project state and guide the next step in the PRD→ADR→SPEC flow. |
+
+`/decree:init` is a Claude Code skill, not a CLI subcommand. There is no `decree init`
+command — the skill scaffolds the folder for you.
+
+For agents outside Claude Code, the portable skill `decree-governs-suggest` generates
+agent-side `governs:` suggestions from decree's `analyze` JSON contract. The agent owns
+the model call; decree validates the suggestions and owns the write.
+
+## Why agents can trust it
+
+decree is deterministic. It resolves no model and reads no API key — LLM execution
+belongs to the agent runtime, so decree stays a fixed function: same corpus, same
+question, same answer, no temperature.
+
+It answers only from declared facts — `governs:` frontmatter and the references between
+documents. It does not read git blame to guess intent. It does not infer a decision that
+was never written down.
+
+Empty arrays are valid abstentions. When `matches` or `conflicts` come back empty, the
+answer is "nothing governs this." The agent must take that at face value and not invent
+governance to look thorough.
+
+There are no hidden fallbacks. A missing or stale index is a hard error with a hint to
+rebuild — never a silent guess. decree would rather refuse than fabricate.
+
+<Callout kind="honesty">decree tells you which decision governs a path, not whether that decision is still correct. It checks declared scope, not the wisdom behind it. The judgment stays with you.</Callout>
+
+---
+
+<CardGrid>
+  <CapabilityCard title="Why it abstains" href="/capabilities/why/" cmd="decree why src/auth/tokens.py">
+    The model behind every answer — declared facts in, governing decisions out, an empty result when nothing applies.
+  </CapabilityCard>
+  <CapabilityCard title="Start here" href="/start/" cmd="uv tool install git+https://github.com/doruksahin/decree">
+    Install decree, declare your decision types, and wire this loop into your agents and CI.
+  </CapabilityCard>
+</CardGrid>

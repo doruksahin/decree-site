@@ -1,0 +1,41 @@
+
+[1;36m$ decree progress[0m
+[progress] loaded 30 documents
+[progress] scope: all documents
+✓ 414/414 primary items complete (100%) across 30 documents
+[progress] 0/88 deferred items separated from primary progress
+[progress] use --doc ID, --chain ID, --changed --base REF, or --governs PATH to narrow parallel work
+Scope: all documents
+
+  ADR-01KT22NMRV7GMAXKWSBEEN68KE   Coupled C4 Module vs Plugin Architecture  accepted     ░░░░░░░░░░   — 
+  ADR-01KT22NMRV8ZFMDKV0WNFNGMCJ   Use Distributed Frontmatter IDs for P...  accepted     ░░░░░░░░░░   — 
+  ADR-01KT22NMRV9CP14X5982JJH161   Index-First Architecture for Decree Q...  accepted     ░░░░░░░░░░   — 
+  ADR-01KT2JRPKC8ZWK48YFXXKS7ZGV   Cross-session live-conflict detection...  accepted     ░░░░░░░░░░   — 
+  PRD-01KT22NMRR0BX7KBF0F0N5ER6Z   DDD CLI Command and Proofshot Integra...  implemented  ██████████ 100% (17/17 primary)
+  PRD-01KT22NMRR63TXR7NX5XYRG5FK   C4 Architecture Support                   implemented  ░░░░░░░░░░   — 
+  PRD-01KT22NMRS4QGHSFDBZ858PP1T   Queryable Decision Provenance Graph       implemented  ░░░░░░░░░░   — 
+  PRD-01KT22NMRSXYT95XE808VD8EV4   State-of-the-Art Decision Reasoning       implemented  ░░░░░░░░░░   — 
+  PRD-01KT22NMRTAF9581AXC53EHQTW   Real-Corpus Validation Against jira-t...  approved     ░░░░░░░░░░   — 
+  PRD-01KT22NMRTFTWFFARAN0PVEETA   Parallel-Safe Document Identity and S...  implemented  ░░░░░░░░░░   — 
+  SPEC-01KT22NMRW79Y92MKZT807B2J1  DDD CLI, Completion Report, and Stop ...  implemented  ██████████ 100% (31/31 primary); deferred 0/6
+  SPEC-01KT22NMRWENYKC3MGRA50M7GE  C4 Validation and Diagram Generation      implemented  ██████████ 100% (32/32 primary); deferred 0/5
+  SPEC-01KT22NMRX176PCT00SKJ9G2AQ  SQLite Provenance Index — Schema and ...  implemented  ██████████ 100% (25/25 primary); deferred 0/7
+  SPEC-01KT22NMRXFWNE61NSETKATHBA  governs Field — Frontmatter and Lint ...  implemented  ██████████ 100% (19/19 primary); deferred 0/4
+  SPEC-01KT22NMRXWCS5TK5VC1FT6JER  decree why and decree refs — Governed...  implemented  ██████████ 100% (25/25 primary); deferred 0/5
+  SPEC-01KT22NMRY8YK9RP4323KX4RQG  Git Trailers and decree commit Wrapper    implemented  ██████████ 100% (27/27 primary); deferred 0/5
+  SPEC-01KT22NMRYJ4482K92AX9GJTMA  MCP Server — decree.why and decree.re...  implemented  ██████████ 100% (16/16 primary); deferred 0/6
+  SPEC-01KT22NMRYNFYM7EN80WS2HD6F  Coherence Gates, Staleness, and Ungov...  implemented  ██████████ 100% (29/29 primary); deferred 0/6
+  SPEC-01KT22NMRYRZQ59EC88VJ5R0N6  decree intent-review — Diff-aware Gov...  implemented  ██████████ 100% (20/20 primary); deferred 0/6
+  SPEC-01KT22NMRZ4W0CFDSJVHVQ8JBR  decree migrate audit-coherence — Dry-...  implemented  ██████████ 100% (19/19 primary); deferred 0/5
+  SPEC-01KT22NMRZXE5C42F6Z0ZY559A  Evaluation Harness — Labeled Query Se...  implemented  ██████████ 100% (24/24 primary); deferred 0/8
+  SPEC-01KT22NMRZZ0ZZ0DQ4N0SJPN9S  decree migrate governs — Agent-Assist...  implemented  ██████████ 100% (15/15 primary)
+  SPEC-01KT22NMS0BN1F5B01HEFK87W0  Provider-Free Agent Suggestion Contract   implemented  ██████████ 100% (18/18 primary)
+  SPEC-01KT22NMS0D19VMD8VPK4D2MNX  Parallel-Safe Document Identity and S...  implemented  ██████████ 100% (11/11 primary)
+  SPEC-01KT22NMS0KTWGNKB36RR7K0JR  decree intent-check — Pre-PR Planning...  implemented  ██████████ 100% (13/13 primary)
+  SPEC-01KT22NMS0VWCTYPFPHP8M8V36  Calibrated Abstention — Conformal Con...  implemented  ██████████ 100% (28/28 primary); deferred 0/6
+  SPEC-01KT3M6NY02TXXPJCP52QEYFW1  Agentkith parallel-session MCP support    implemented  ██████████ 100% (10/10 primary); deferred 0/5
+  SPEC-01KT6EEAHKWDQB2Y6S4TTKB77D  Observed-governs Index and Dead-gover...  implemented  ██████████ 100% (12/12 primary); deferred 0/4
+  SPEC-01KT6NCQC7DMJ3NG1MPWBGBVFQ  Missing governance suggestions from o...  implemented  ██████████ 100% (12/12 primary); deferred 0/6
+  SPEC-01KT6TCFMWAV6N8G5DR5QMX1P5  Point-of-change governs-gap suggestio...  implemented  ██████████ 100% (11/11 primary); deferred 0/4
+
+[2m→ exit 0[0m

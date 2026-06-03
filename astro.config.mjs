@@ -48,6 +48,8 @@ export default defineConfig({
       sidebar: [
         { label: 'Start here', link: '/start/' },
         { label: 'Capabilities', items: [{ autogenerate: { directory: 'capabilities' } }] },
+        { label: 'For agents & CI', link: '/agents/' },
+        { label: 'Why decree', link: '/why-decree/' },
         { label: 'decree by example', link: '/examples/' },
       ],
     }),

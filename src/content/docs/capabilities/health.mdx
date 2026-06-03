@@ -38,12 +38,13 @@ which half is a finding and which half is only a hint.
 {/* ── 5. The concept ──────────────────────────────────────────────────────── */}
 ## How it works
 
-`health` surfaces four git-derived signals: **stale decisions** (declared paths
-churned while the decision sat still), **ungoverned hotspots** (high-churn files no
-decision owns), **dead governance** (declared `governs:` paths no trailer-linked commit
-ever touched), and **suggested governance** (files a decision's own commits repeat-touch
-but never declare). It is read-only and deterministic — it computes over the
-`Implements:/Refs:/Fixes:` trailer convention and git history, and never writes a thing.
+`health` surfaces four signals from the SQLite index and git history. **Stale decisions**
+(declared paths churned while the decision sat still) and **ungoverned hotspots**
+(high-churn files no decision owns) key off git churn. **Dead governance** (declared
+`governs:` paths no trailer-linked commit ever touched) and **suggested governance** (files
+a decision's own commits repeat-touch but never declare) additionally rest on the
+`Implements:/Refs:/Fixes:` trailer convention — deterministic to compute, not certain. All
+four are read-only and never feed `why()`.
 
 {/* ── 6. Run it ───────────────────────────────────────────────────────────── */}
 ## Run it

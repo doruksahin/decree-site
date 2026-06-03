@@ -12,16 +12,19 @@ what's declared. There is no service to run and no model to call.
 
 ## Install
 
+decree installs from source — the name `decree` on PyPI is an unrelated project, so install
+from the GitHub repo:
+
 <Tabs>
   <TabItem label="uv">
     ```bash
-    uv tool install decree
+    uv tool install git+https://github.com/doruksahin/decree
     decree --version
     ```
   </TabItem>
-  <TabItem label="pip">
+  <TabItem label="pipx">
     ```bash
-    pip install decree
+    pipx install git+https://github.com/doruksahin/decree
     decree --version
     ```
   </TabItem>

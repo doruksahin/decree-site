@@ -189,6 +189,80 @@
   .dc-hero-terminals { grid-template-columns: 1fr 1fr; }
 }
 
+/* ── Hero (two-column landing) ────────────────────────────────────────────── */
+/* Starlight prints the page title as <h1 id="_top"> in its own content-panel on a
+   splash page with no `hero:` frontmatter. Our <Hero> provides the real headline,
+   so hide that whole title panel — scoped to pages that contain a .dc-hero. */
+main:has(.dc-hero) > .content-panel:has(h1#_top) { display: none; }
+
+.dc-hero {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  padding: 1.5rem 0 2.5rem;
+}
+@media (min-width: 56rem) {
+  .dc-hero { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 2.5rem; }
+}
+.dc-hero-eyebrow {
+  font-family: var(--sl-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--decree-cyan);
+  margin: 0 0 0.9rem;
+}
+.dc-hero-title {
+  font-size: clamp(2.1rem, 5vw, 3.1rem);
+  line-height: 1.06;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+  font-weight: 700;
+}
+.dc-hero-tagline {
+  font-size: 1.08rem;
+  line-height: 1.6;
+  color: var(--sl-color-gray-2);
+  margin: 0 0 1.5rem;
+  max-width: 38rem;
+}
+.dc-hero-tagline em { color: var(--decree-amber); font-style: normal; }
+.dc-hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem; }
+.dc-btn-primary,
+.dc-btn-ghost {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.45rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.dc-btn-primary { background: var(--decree-cyan); color: #06181a; }
+.dc-btn-primary:hover { background: color-mix(in srgb, var(--decree-cyan) 85%, #fff); }
+.dc-btn-ghost { border: 1px solid var(--decree-line); color: var(--sl-color-white); }
+.dc-btn-ghost:hover { border-color: var(--decree-cyan); }
+.dc-hero-install { max-width: 34rem; }
+.dc-hero-install .expressive-code { margin: 0; }
+.dc-hero-note { font-size: 0.82rem; color: var(--decree-muted); margin: 0.75rem 0 0; }
+.dc-hero-demo { display: grid; gap: 0.75rem; min-width: 0; }
+
+/* ── Credibility strip ────────────────────────────────────────────────────── */
+.dc-cred {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  align-items: center;
+  padding: 0.9rem 1.1rem;
+  margin: 0.5rem 0 1rem;
+  border: 1px solid var(--decree-line);
+  border-radius: 0.6rem;
+  background: #0d0d12;
+  font-size: 0.86rem;
+  color: var(--sl-color-gray-2);
+}
+.dc-cred b { color: var(--sl-color-white); }
+.dc-cred .dc-cred-item { display: inline-flex; align-items: center; gap: 0.45rem; }
+.dc-cred .dc-cred-dot { color: var(--decree-green); }
+
 /* ── Exit-code contract rows (landing) ────────────────────────────────────── */
 .dc-exitrow {
   display: flex;

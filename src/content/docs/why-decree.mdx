@@ -1,0 +1,123 @@
+---
+title: Why decree, not just a folder of ADRs?
+description: You already write ADRs in a folder. decree makes those decisions queryable, enforceable, and checkable on every change — by humans and agents — without replacing your markdown, your reviewer, or your judgment. Here is the honest comparison.
+sidebar:
+  label: Why decree
+  order: 2
+---
+
+import Callout from '../../components/Callout.astro';
+import ExitBadge from '../../components/ExitBadge.astro';
+import BeforeAfter from '../../components/BeforeAfter.astro';
+
+**You already write ADRs in a folder. Why add a tool?**
+
+Fair question. A folder of markdown records your decisions, and that is already more
+than most teams do. So the honest framing is not *folder vs. decree* — it is *what a
+folder can't do that you keep wishing it could.*
+
+A folder **records** a decision. decree makes that same decision **queryable**,
+**enforceable**, and **checkable on every change** — by a human or an agent. It does
+this on top of your existing markdown, not instead of it.
+
+{/* ── The concrete gap ─────────────────────────────────────────────────────── */}
+## The thing a folder can't answer
+
+<BeforeAfter scenario="You're about to edit <code>src/auth/tokens.py</code>. Which decision governs it, and is my change allowed?">
+  <Fragment slot="before">
+    Your ADRs live in `docs/adr/`. To find the one that governs this file you `grep`
+    for the path, scan a few titles, and **guess**. The ADR that mentions tokens might
+    be the current one — or the superseded one two files down. The folder won't tell
+    you which reference is dangling or stale. You're back to **archaeology**.
+  </Fragment>
+  <Fragment slot="after">
+    You add one typed `governs:` field to the decision's frontmatter, mapping it to the
+    paths it owns. Now `decree why src/auth/tokens.py` returns the governing decision
+    **deterministically** — its status, its declared scope — or says *"no governing
+    decisions"* and exits `0` when nothing applies.
+  </Fragment>
+  <Fragment slot="foot">
+    <Callout kind="value">The reason behind the code is one query away, and `decree lint` tells you when a cross-reference points at a decision that doesn't exist or has been superseded.</Callout>
+    <Callout kind="honesty">decree answers only from what you declare in `governs:`. An undeclared file returns "no governing decisions" — honest abstention, not omniscience. Coverage is your responsibility.</Callout>
+  </Fragment>
+</BeforeAfter>
+
+{/* ── The comparison table ─────────────────────────────────────────────────── */}
+## The honest comparison
+
+decree is not the only thing in this space, and it is not a replacement for most of
+what's already there. Here is where each tool actually helps — using ✓ / ✗ / partial
+honestly, including where decree does **not** earn a check.
+
+| Capability | A folder of ADRs | CODEOWNERS | LLM reviewer | decree |
+|---|:---:|:---:|:---:|:---:|
+| Map a file → its governing **decision** | ✗ | ✗ | partial | ✓ |
+| Fail CI when a change **collides** with a decision | ✗ | ✗ | partial | ✓ |
+| Validate cross-type references / illegal status transitions | ✗ | ✗ | ✗ | ✓ |
+| Deterministic — same input → same answer | ✓ | ✓ | ✗ | ✓ |
+| Abstains instead of guessing when nothing applies | ✗ | ✗ | ✗ | ✓ |
+| Surface governance **drift** over time | ✗ | ✗ | partial | partial |
+| Judge whether a change is semantically **correct** | ✗ | ✗ | partial | ✗ |
+| Decide **who reviews** a path | ✗ | ✓ | ✗ | ✗ |
+| Define **any** document type, not a fixed schema | partial | ✗ | n/a | ✓ |
+| Parallel-safe IDs across branches / worktrees | ✗ | n/a | n/a | ✓ |
+
+A few of those cells are worth reading slowly:
+
+- decree gets **✗** on *judge whether a change is semantically correct*. It detects
+  structural overlap, not contradiction. That column belongs to a human or an LLM.
+- decree gets only **partial** on *surface governance drift*. The drift signals are
+  real but rest on a commit-trailer convention — deterministic to compute, advisory
+  by design (more below).
+- CODEOWNERS gets the **✓** for *who reviews a path*, because that is its job and
+  decree doesn't do it. Different axis.
+
+{/* ── Additive, not a replacement ──────────────────────────────────────────── */}
+## decree is additive, not a replacement
+
+decree sits **on top of** the markdown ADRs you already write. Every tool above
+answers a different question, and they compose:
+
+- **A plain folder of ADRs** (the status quo — `adr-tools`, Log4brains): keep it.
+  decree adds a queryable `governs:` map, a conflict gate, and reference/status
+  validation on top of the *same* markdown files. You don't migrate; you annotate.
+- **CODEOWNERS**: answers *"who must review this path."* decree answers *"which
+  decision governs this path, and is my change aligned with it."* Different axis,
+  fully complementary — run both.
+- **An LLM code reviewer** (CodeRabbit-style): probabilistic, and can hallucinate a
+  rationale that was never recorded. decree is deterministic and abstains. So they
+  compose cleanly: decree gives the loop a hard, gateable check; the LLM opines on
+  the parts decree deliberately won't.
+
+decree does not replace human review or an LLM reviewer. It gives both a
+**deterministic gate** to stand on — `decree intent-check` before code,
+`decree intent-review --diff` after — each exiting <ExitBadge code={1} /> when a
+planned change or a diff structurally collides with governance, so a CI job or an
+agent loop can stop and make a human look.
+
+{/* ── What decree won't do ─────────────────────────────────────────────────── */}
+## What decree deliberately does NOT do
+
+This is the part most tools skip. decree's brand is honesty, so the limits are stated,
+not buried:
+
+- **It makes no semantic judgment.** decree detects structural overlap — two decisions
+  declaring the same path, a diff touching a governed file. <ExitBadge code={1} />
+  means *"a human or agent must look,"* never *"this change is wrong."* The
+  correctness call is not decree's to make.
+- **It answers only from what you declare.** `why` and `intent-check` read the
+  `governs:` frontmatter and nothing else — no git, no inference. An undeclared file
+  returns "no governing decisions." Coverage is your discipline, not decree's
+  omniscience.
+- **Its git-derived signals are convention-bounded.** `decree health` surfaces drift —
+  declared scope that diverged from where code actually changed — from the
+  `Implements:/Refs:/Fixes:` commit-trailer convention. Those signals are deterministic
+  to compute but **advisory and coverage-honest**: as reliable as the trailer
+  discipline behind them, and never presented as certainty.
+
+<Callout kind="honesty">decree is deterministic — no model, no temperature, same input → same answer — which is exactly why its exit codes are safe to gate CI on. That same discipline is why it abstains, why it won't grade correctness, and why it labels its git signals advisory. The honesty isn't a disclaimer; it's the reason the gate is trustworthy.</Callout>
+
+---
+
+See it run on real scenarios: [decree by example](/examples/). Or wire it into your
+project: [getting started](/start/).

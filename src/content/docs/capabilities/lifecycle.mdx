@@ -68,6 +68,15 @@ read from. `decree graph` appends Mermaid diagrams — decision timelines, super
 chains, status distributions, C4 container views — below a generated marker in each
 type's `index.md`. Both are derived from the corpus, so they never drift from it.
 
+## refs — the reverse graph
+
+Where `why` goes from a file to its decisions, `decree refs <id>` goes the other way:
+everything connected to one decision — forward and reverse references, the supersedes
+chain, every file it governs, and the trailer-linked commits that implemented it. Here it
+is run against decree's own identity SPEC:
+
+<Ansi name="snippets/dogfood-refs" title="decree refs, run against the decree repo" />
+
 ## When you'd reach for this
 
 - **In CI** — gate every push with `decree lint`, so a broken reference fails the build.

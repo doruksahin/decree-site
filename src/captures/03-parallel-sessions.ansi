@@ -2,8 +2,8 @@
 [1m── The corpus: one decision governing the contested file ──[0m
 [index] rebuilding into .decree/index.sqlite
 [index] decisions=1  refs=0  governs=1  acs=0  commits=0
-[index] git_sync_ms=23
-✓ index rebuilt in 39ms
+[index] git_sync_ms=25
+✓ index rebuilt in 40ms
 
 [1m── This session plans tokens.py — we tell decree session-b also plans it ──[0m
 

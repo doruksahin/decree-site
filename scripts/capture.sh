@@ -344,6 +344,23 @@ EOF
   # non-deterministic, so it's described in prose on the site rather than captured.
 }
 
+# Corpus G — the REAL decree repo (dogfood): decree governs its own code.
+# Runs against the sibling ../decree working tree, not a throwaway corpus.
+# Output is a live proof, so it tracks the real repo as it evolves. Clean
+# (no temp paths) for `why` and `progress`. Skipped if the repo isn't present.
+gen_dogfood() {
+  local repo
+  repo="$(cd "$EX_DIR/.." 2>/dev/null && pwd)" || return 0
+  [ -f "$repo/decree.toml" ] || { echo "  (dogfood skipped — no decree repo at $repo)"; return 0; }
+  (
+    cd "$repo" || exit 0
+    q "$DECREE" index rebuild   # refresh the derived cache (.decree/, gitignored)
+    dc why src/decree/parser.py > "$SNIP/dogfood-why.ansi" 2>&1
+    dc progress                 > "$SNIP/dogfood-progress.ansi" 2>&1
+    dc refs SPEC-01KT22NMS0D19VMD8VPK4D2MNX > "$SNIP/dogfood-refs.ansi" 2>&1
+  )
+}
+
 # Each in a subshell so make_demo_repo's cd + cleanup trap stay isolated.
 ( gen_why )
 ( gen_conflict )
@@ -351,6 +368,7 @@ EOF
 ( gen_health )
 ( gen_governs_gap )
 ( gen_lifecycle )
+gen_dogfood
 
 echo
 echo "snippets:"

@@ -1,0 +1,8 @@
+
+[1;36m$ decree why src/decree/parser.py[0m
+src/decree/parser.py — 1 governing decision
+
+  ▸ SPEC-01KT22NMS0D19VMD8VPK4D2MNX  implemented  2026-06-01  exact
+    Parallel-Safe Document Identity and Scoped Progress
+    governs: src/decree/parser.py
+[2m→ exit 0[0m

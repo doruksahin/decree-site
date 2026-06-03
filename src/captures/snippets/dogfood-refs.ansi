@@ -1,0 +1,27 @@
+
+[1;36m$ decree refs SPEC-01KT22NMS0D19VMD8VPK4D2MNX[0m
+SPEC-01KT22NMS0D19VMD8VPK4D2MNX  implemented  2026-06-01
+  Parallel-Safe Document Identity and Scoped Progress
+
+  Forward refs (2):
+    → ADR-01KT22NMRV8ZFMDKV0WNFNGMCJ  (references)
+    → PRD-01KT22NMRTFTWFFARAN0PVEETA  (references)
+
+  Reverse refs (0):
+    (none)
+
+  Supersedes chain (0):
+    (none)
+
+  Governs (7):
+    src/decree/identity.py
+    src/decree/parser.py
+    src/decree/commands/new.py
+    src/decree/commands/migrate.py
+    src/decree/commands/progress.py
+    src/decree/commands/ddd.py
+    src/decree/cli.py
+
+  Commits (1):
+    5645dcb4  Implements  feat: make decree parallel-safe and fail-closed
+[2m→ exit 0[0m

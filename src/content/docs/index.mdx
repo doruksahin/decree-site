@@ -1,50 +1,45 @@
 ---
 title: decree
-description: decree tracks the decisions behind your code (PRD → ADR → SPEC) and checks every change against them. It answers only from what is declared — and abstains instead of guessing.
+description: decree maps every file to the decisions that govern it and checks each change before it ships — answering only from what's declared, and abstaining instead of guessing. Built for human engineers and the LLM agents editing alongside them.
 template: splash
-hero:
-  title: Decision governance for your codebase — and the agents editing it.
-  tagline: decree tracks the decisions behind your code (PRD → ADR → SPEC) and checks every change against them. It answers only from what's declared — and says “no governing decisions” instead of guessing.
-  actions:
-    - text: Get started
-      link: /start/
-      icon: right-arrow
-      variant: primary
-    - text: See it by example
-      link: /examples/
-      icon: right-arrow
-      variant: minimal
 ---
 
+import Hero from '../../components/Hero.astro';
 import Ansi from '../../components/Ansi.astro';
 import Callout from '../../components/Callout.astro';
 import ExitBadge from '../../components/ExitBadge.astro';
 import BeforeAfter from '../../components/BeforeAfter.astro';
 import CapabilityCard from '../../components/CapabilityCard.astro';
 import LifecycleChain from '../../components/LifecycleChain.astro';
+import { Code } from '@astrojs/starlight/components';
 
-{/* ── Hero demo: the money shot. A governed file, and a file nothing governs. ── */}
-<div class="dc-hero-terminals">
-  <Ansi name="snippets/why-hit" title="ask which decision governs a file" />
-  <Ansi name="snippets/why-abstain" title="…and when none does, it says so" />
+<Hero
+  eyebrow="open source · deterministic · MIT"
+  title="Your code outlives the reasons for it."
+  tagline="Humans forget which decision a file answers to. Agents never knew. decree keeps the decision attached to the code and checks every change against it — answering only from what's declared, and saying <em>“no governing decisions”</em> instead of guessing."
+>
+  <Fragment slot="actions">
+    <a class="dc-btn-primary" href="/start/">Get started</a>
+    <a class="dc-btn-ghost" href="/examples/">See it by example</a>
+  </Fragment>
+  <Fragment slot="install">
+    <Code code="uv tool install git+https://github.com/doruksahin/decree" lang="bash" />
+  </Fragment>
+  <Fragment slot="note">
+    Installs from source — the bare name <code>decree</code> on PyPI is an unrelated project.
+  </Fragment>
+  <Fragment slot="demo">
+    <Ansi name="snippets/why-hit" title="ask which decision governs a file" />
+    <Ansi name="snippets/why-abstain" title="…and when none does, it says so" />
+  </Fragment>
+</Hero>
+
+<div class="dc-cred">
+  <span class="dc-cred-item"><span class="dc-cred-dot">●</span> <b>MIT</b> &amp; open source</span>
+  <span class="dc-cred-item"><span class="dc-cred-dot">●</span> Python CLI, <b>language-agnostic</b> — governs paths, not your code</span>
+  <span class="dc-cred-item"><span class="dc-cred-dot">●</span> decree governs its own code: <b>30 decisions, 414/414</b> acceptance criteria, lint clean</span>
+  <span class="dc-cred-item"><span class="dc-cred-dot">●</span> every terminal here is <b>real captured output</b></span>
 </div>
-
-```bash title="install"
-uv tool install decree    # or: pip install decree
-```
-
-Every terminal block on this site is real `decree` output, captured from an actual
-run. Nothing here is mocked.
-
-## Code outlives the reasons for it
-
-A decision gets made, the code gets written, and the reasoning evaporates. Humans
-forget. Agents never knew. By the time a change ships, nobody can say which decision
-it was supposed to honor — so the next edit quietly breaks it.
-
-decree keeps the decision attached to the code, and checks every change against it.
-
-<LifecycleChain />
 
 ## Which decision explains this code?
 
@@ -60,28 +55,14 @@ decree keeps the decision attached to the code, and checks every change against 
     <Ansi name="snippets/why-hit" />
   </Fragment>
   <Fragment slot="foot">
-    <Callout kind="value">The reason behind the code is one query away — not buried in chat history.</Callout>
+    <Callout kind="value">The reason behind the code is one query away — not buried in chat history or a teammate's memory.</Callout>
     <Callout kind="honesty">`why` answers only from declared `governs:`. If nothing governs the file, it says so. It will not invent a decision.</Callout>
   </Fragment>
 </BeforeAfter>
 
-## Two exit codes are the whole contract
+decree captures decisions as a chain and links each one to the code it governs:
 
-decree is built to run in CI and in agent loops, so its verdict is the exit code —
-not prose someone has to read.
-
-<div class="dc-exitrow">
-  <ExitBadge code={1} />
-  <span>a finding you can gate on: a conflict, a live overlap, dead governance.</span>
-</div>
-<div class="dc-exitrow">
-  <ExitBadge code={0} />
-  <span>clean — or advisory-only. Suggestions never block.</span>
-</div>
-<div class="dc-exitrow">
-  <ExitBadge code={2} />
-  <span>a config error, never a finding. The two are kept apart on purpose.</span>
-</div>
+<LifecycleChain />
 
 ## What decree does
 
@@ -102,52 +83,69 @@ not prose someone has to read.
     Surface a file your decision owns in practice but never declared.
   </CapabilityCard>
   <CapabilityCard title="the lifecycle" cmd="decree lint" href="/capabilities/lifecycle/">
-    Create, validate, and track decisions: lint, status, progress, graph.
+    Create, validate, and track decisions: lint, status, progress, refs, graph.
   </CapabilityCard>
+</div>
+
+## The exit code is the contract
+
+decree runs in CI and in agent loops, so its verdict is the exit code — not prose someone
+has to read.
+
+<div class="dc-exitrow">
+  <ExitBadge code={1} />
+  <span>a finding you can gate on: a conflict, a live overlap, dead governance.</span>
+</div>
+<div class="dc-exitrow">
+  <ExitBadge code={0} />
+  <span>clean — or advisory-only. Suggestions never block.</span>
+</div>
+<div class="dc-exitrow">
+  <ExitBadge code={2} />
+  <span>a config error, never a finding. The two are kept apart on purpose.</span>
 </div>
 
 ## Built for agents, not just people
 
-An LLM agent editing your code has no memory of the decisions it's about to break.
-decree gives it a deterministic check it can run before and after every edit: map the
-file, check the plan, review the diff. The output is structured JSON; the exit code
-gates the loop. The same command that helps a human in review keeps an agent inside
-the lines.
+An LLM agent editing your code has no memory of the decisions it's about to break. decree
+gives it a deterministic check to run before and after every edit — and the exit code gates
+the loop. The same checks are exposed over MCP (`decree mcp serve`: eight tools, identical
+JSON to the CLI) and as Claude Code skills (`/decree:init`, `/decree:adr`, `/decree:ddd`, …).
+
+<div class="dc-cta">
+  <a class="dc-cta-primary" href="/agents/">decree for agents &amp; CI →</a>
+</div>
 
 ## Deterministic, not “AI”
 
-decree has no model and no temperature. The same corpus and the same diff produce the
-same answer, every run. It reads declared facts and computes structural overlap — it
-never asks a language model what your code probably means. That's what makes its
-output safe to gate CI on.
+decree has no model and no temperature. The same corpus and the same diff produce the same
+answer, every run. It reads declared facts and computes structural overlap — it never asks a
+language model what your code probably means, and it never judges whether your change is
+*correct*, only whether it collides. That single boundary — **answers only from what's
+declared** — is exactly what makes its output safe to gate CI on.
 
-## Trustworthy because it abstains
+## Why decree, and not just a folder of ADRs?
 
-decree's signals are honest about their own limits, and the boundary is the point.
-
-<BeforeAfter scenario="Months later: a SPEC still claims it governs <code>legacy_sso.py</code> — but no commit that cited it ever touched that file.">
-  <Fragment slot="before">
-    The `governs:` list has quietly become **fiction**. Nobody noticed, because
-    nothing was watching. The map and the territory drifted apart.
-  </Fragment>
-  <Fragment slot="after">
-    `decree health` separates a **finding** from an **advisory**, and never confuses them:
-
-    <Ansi name="snippets/health" />
-  </Fragment>
-  <Fragment slot="foot">
-    <Callout kind="value">Dead governance (declared, never touched) is a finding you can gate on. Scope the code grew into but never declared is advisory — surfaced, never enforced.</Callout>
-    <Callout kind="honesty">These signals read the `Implements:` trailer convention, not certainty — deterministic to compute, advisory to act on. A decision with no trailered commits is reported “unobserved, not dead.”</Callout>
-  </Fragment>
-</BeforeAfter>
-
-## See the whole story
-
-Six runnable scenarios walk one change through its whole life — **before** you code,
-**while** you code, **after** you code, and **over time** — each with real output and
-the exit code it returns.
+You already write decisions in markdown. decree makes them **queryable** (`governs:` → file),
+**enforceable** (an exit-coded CI gate), and **checkable over time** (drift detection) — on top
+of the same files, for humans and agents both. It's additive, not a replacement.
 
 <div class="dc-cta">
-  <a class="dc-cta-primary" href="/examples/">decree by example →</a>
-  <a class="dc-cta-secondary" href="/start/">Install and run it →</a>
+  <a class="dc-cta-secondary" href="/why-decree/">Why decree, not just a folder of ADRs? →</a>
+</div>
+
+## decree governs its own code
+
+This isn't a toy demo. decree manages its own decisions, and governs its own source:
+
+<Ansi name="snippets/dogfood-why" title="decree, run against the decree repo" />
+
+Its corpus is **30 decisions at 414/414 acceptance criteria, lint clean** — tracked by decree
+itself. [See the full by-example walkthrough →](/examples/)
+
+## Start
+
+<div class="dc-cta">
+  <a class="dc-cta-primary" href="/start/">Install and run it</a>
+  <a class="dc-cta-secondary" href="/examples/">decree by example</a>
 </div>
