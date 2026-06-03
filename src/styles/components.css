@@ -188,3 +188,38 @@
 @media (min-width: 60rem) {
   .dc-hero-terminals { grid-template-columns: 1fr 1fr; }
 }
+
+/* ── Exit-code contract rows (landing) ────────────────────────────────────── */
+.dc-exitrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.55rem 0;
+  font-size: 0.95rem;
+}
+.dc-exitrow > .dc-exit { flex: none; min-width: 9.5rem; }
+
+/* ── CTA row ──────────────────────────────────────────────────────────────── */
+.dc-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem 0 0.5rem;
+}
+.dc-cta a {
+  display: inline-block;
+  padding: 0.6rem 1.1rem;
+  border-radius: 0.45rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.dc-cta-primary {
+  background: var(--decree-cyan);
+  color: #06181a;
+}
+.dc-cta-primary:hover { background: color-mix(in srgb, var(--decree-cyan) 85%, #fff); }
+.dc-cta-secondary {
+  border: 1px solid var(--decree-line);
+  color: var(--sl-color-white);
+}
+.dc-cta-secondary:hover { border-color: var(--decree-cyan); }

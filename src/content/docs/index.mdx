@@ -1,40 +1,153 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+title: decree
+description: decree tracks the decisions behind your code (PRD → ADR → SPEC) and checks every change against them. It answers only from what is declared — and abstains instead of guessing.
+template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
+  title: Decision governance for your codebase — and the agents editing it.
+  tagline: decree tracks the decisions behind your code (PRD → ADR → SPEC) and checks every change against them. It answers only from what's declared — and says “no governing decisions” instead of guessing.
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: Get started
+      link: /start/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
+      variant: primary
+    - text: See it by example
+      link: /examples/
+      icon: right-arrow
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import Ansi from '../../components/Ansi.astro';
+import Callout from '../../components/Callout.astro';
+import ExitBadge from '../../components/ExitBadge.astro';
+import BeforeAfter from '../../components/BeforeAfter.astro';
+import CapabilityCard from '../../components/CapabilityCard.astro';
+import LifecycleChain from '../../components/LifecycleChain.astro';
 
-## Next steps
+{/* ── Hero demo: the money shot. A governed file, and a file nothing governs. ── */}
+<div class="dc-hero-terminals">
+  <Ansi name="snippets/why-hit" title="ask which decision governs a file" />
+  <Ansi name="snippets/why-abstain" title="…and when none does, it says so" />
+</div>
 
-<CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
-</CardGrid>
+```bash title="install"
+uv tool install decree    # or: pip install decree
+```
+
+Every terminal block on this site is real `decree` output, captured from an actual
+run. Nothing here is mocked.
+
+## Code outlives the reasons for it
+
+A decision gets made, the code gets written, and the reasoning evaporates. Humans
+forget. Agents never knew. By the time a change ships, nobody can say which decision
+it was supposed to honor — so the next edit quietly breaks it.
+
+decree keeps the decision attached to the code, and checks every change against it.
+
+<LifecycleChain />
+
+## Which decision explains this code?
+
+<BeforeAfter scenario="You're about to edit <code>src/auth/tokens.py</code>. Why are tokens hashed, not encrypted?">
+  <Fragment slot="before">
+    You **don't know**. So you `git blame`, open three stale PRs, grep the wiki, and
+    ping a teammate who left last quarter. Twenty minutes gone, and you're **still
+    guessing** whether your change is allowed.
+  </Fragment>
+  <Fragment slot="after">
+    One command returns the exact governing decision, attached to the file:
+
+    <Ansi name="snippets/why-hit" />
+  </Fragment>
+  <Fragment slot="foot">
+    <Callout kind="value">The reason behind the code is one query away — not buried in chat history.</Callout>
+    <Callout kind="honesty">`why` answers only from declared `governs:`. If nothing governs the file, it says so. It will not invent a decision.</Callout>
+  </Fragment>
+</BeforeAfter>
+
+## Two exit codes are the whole contract
+
+decree is built to run in CI and in agent loops, so its verdict is the exit code —
+not prose someone has to read.
+
+<div class="dc-exitrow">
+  <ExitBadge code={1} />
+  <span>a finding you can gate on: a conflict, a live overlap, dead governance.</span>
+</div>
+<div class="dc-exitrow">
+  <ExitBadge code={0} />
+  <span>clean — or advisory-only. Suggestions never block.</span>
+</div>
+<div class="dc-exitrow">
+  <ExitBadge code={2} />
+  <span>a config error, never a finding. The two are kept apart on purpose.</span>
+</div>
+
+## What decree does
+
+<div class="dc-cardgrid">
+  <CapabilityCard title="why" cmd="decree why <file>" href="/capabilities/why/">
+    Map any file to the decisions that govern it — before you touch it.
+  </CapabilityCard>
+  <CapabilityCard title="intent-check" cmd="decree intent-check" href="/capabilities/intent-check/">
+    Catch a collision at planning time, before you write a line.
+  </CapabilityCard>
+  <CapabilityCard title="intent-review" cmd="decree intent-review --diff" href="/capabilities/intent-review/">
+    Gate a diff against the decision corpus, CI-shaped.
+  </CapabilityCard>
+  <CapabilityCard title="health" cmd="decree health" href="/capabilities/health/">
+    Find decisions whose declared scope has rotted into fiction.
+  </CapabilityCard>
+  <CapabilityCard title="governs-gap" cmd="decree intent-check --under" href="/capabilities/governs-gap/">
+    Surface a file your decision owns in practice but never declared.
+  </CapabilityCard>
+  <CapabilityCard title="the lifecycle" cmd="decree lint" href="/capabilities/lifecycle/">
+    Create, validate, and track decisions: lint, status, progress, graph.
+  </CapabilityCard>
+</div>
+
+## Built for agents, not just people
+
+An LLM agent editing your code has no memory of the decisions it's about to break.
+decree gives it a deterministic check it can run before and after every edit: map the
+file, check the plan, review the diff. The output is structured JSON; the exit code
+gates the loop. The same command that helps a human in review keeps an agent inside
+the lines.
+
+## Deterministic, not “AI”
+
+decree has no model and no temperature. The same corpus and the same diff produce the
+same answer, every run. It reads declared facts and computes structural overlap — it
+never asks a language model what your code probably means. That's what makes its
+output safe to gate CI on.
+
+## Trustworthy because it abstains
+
+decree's signals are honest about their own limits, and the boundary is the point.
+
+<BeforeAfter scenario="Months later: a SPEC still claims it governs <code>legacy_sso.py</code> — but no commit that cited it ever touched that file.">
+  <Fragment slot="before">
+    The `governs:` list has quietly become **fiction**. Nobody noticed, because
+    nothing was watching. The map and the territory drifted apart.
+  </Fragment>
+  <Fragment slot="after">
+    `decree health` separates a **finding** from an **advisory**, and never confuses them:
+
+    <Ansi name="snippets/health" />
+  </Fragment>
+  <Fragment slot="foot">
+    <Callout kind="value">Dead governance (declared, never touched) is a finding you can gate on. Scope the code grew into but never declared is advisory — surfaced, never enforced.</Callout>
+    <Callout kind="honesty">These signals read the `Implements:` trailer convention, not certainty — deterministic to compute, advisory to act on. A decision with no trailered commits is reported “unobserved, not dead.”</Callout>
+  </Fragment>
+</BeforeAfter>
+
+## See the whole story
+
+Six runnable scenarios walk one change through its whole life — **before** you code,
+**while** you code, **after** you code, and **over time** — each with real output and
+the exit code it returns.
+
+<div class="dc-cta">
+  <a class="dc-cta-primary" href="/examples/">decree by example →</a>
+  <a class="dc-cta-secondary" href="/start/">Install and run it →</a>
+</div>
