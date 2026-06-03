@@ -1,0 +1,17 @@
+# Deploy the static Astro/Starlight site on a Nixpacks platform (Railway, Coolify, …).
+#
+# The site is fully static: `npm run build` emits dist/. We serve that directory on
+# the platform-provided $PORT with `serve`. (If your host offers a static build pack
+# — Coolify "Static", Cloudflare Pages, Netlify, Vercel, GitHub Pages — prefer that
+# and you can delete this file; just set build = `npm run build`, output dir = dist.)
+#
+# Node 22+ is required by Astro 6; package.json `engines.node` pins it.
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "npx serve dist --listen tcp://0.0.0.0:${PORT:-3000}"

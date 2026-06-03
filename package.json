@@ -2,12 +2,16 @@
   "name": "decree-site",
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "serve": "serve dist",
     "capture": "bash scripts/capture.sh",
     "check:refs": "lychee --config .lychee.toml --offline --no-progress docs/decree-references.md",
     "check:links": "lychee --config .lychee.toml --no-progress '**/*.md'"
@@ -19,6 +23,7 @@
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.3.1",
+    "serve": "^14.2.5",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.3.0"
   }
