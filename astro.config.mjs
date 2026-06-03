@@ -13,7 +13,7 @@ export default defineConfig({
       tagline: 'Decision governance for your codebase — and the agents editing it.',
       description:
         'decree tracks the decisions behind your code (PRD → ADR → SPEC) and checks every change against them. It answers only from what is declared — and abstains instead of guessing.',
-      customCss: ['./src/styles/global.css'],
+      customCss: ['./src/styles/global.css', './src/styles/components.css'],
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/doruksahin/decree' },
       ],

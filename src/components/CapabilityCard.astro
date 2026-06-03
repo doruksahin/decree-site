@@ -1,0 +1,18 @@
+---
+/**
+ * A capability teaser card: title, one-line outcome (slot), the command, link.
+ * Used in the landing capability triad and the /capabilities index.
+ */
+interface Props {
+  title: string;
+  cmd?: string;
+  href: string;
+}
+const { title, cmd, href } = Astro.props;
+---
+
+<a class="dc-card" href={href}>
+  <h3>{title}</h3>
+  <p><slot /></p>
+  {cmd && <code class="dc-card-cmd">$ {cmd}</code>}
+</a>

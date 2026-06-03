@@ -1,0 +1,42 @@
+---
+/**
+ * The signature device: one concrete scenario played out two ways.
+ * Left "Without decree" (muted, messier) vs right "With decree" (calm).
+ * Holding the scenario constant is what keeps the contrast honest.
+ *
+ * Usage:
+ *   <BeforeAfter scenario="You're about to edit `src/auth/tokens.py`.">
+ *     <Fragment slot="before"> ...markdown... </Fragment>
+ *     <Fragment slot="after"> ...markdown / <Ansi/> ... </Fragment>
+ *     <Fragment slot="foot"> <Callout kind="value">..</Callout> .. </Fragment>
+ *   </BeforeAfter>
+ */
+interface Props {
+  scenario?: string;
+  beforeLabel?: string;
+  afterLabel?: string;
+}
+const { scenario, beforeLabel = 'Without decree', afterLabel = 'With decree' } = Astro.props;
+---
+
+<div class="dc-ba">
+  {
+    scenario && (
+      <p class="dc-ba-scenario">
+        <span class="dc-ba-eyebrow">Scenario</span>
+        <Fragment set:html={scenario} />
+      </p>
+    )
+  }
+  <div class="dc-ba-grid">
+    <div class="dc-ba-col dc-ba-before">
+      <h4>{beforeLabel}</h4>
+      <slot name="before" />
+    </div>
+    <div class="dc-ba-col dc-ba-after">
+      <h4>{afterLabel}</h4>
+      <slot name="after" />
+    </div>
+  </div>
+  <div class="dc-ba-foot"><slot name="foot" /></div>
+</div>

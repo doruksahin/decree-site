@@ -1,0 +1,16 @@
+---
+/**
+ * The VALUE (green) / HONESTY (amber) lines that mirror the decree CLI's own
+ * footer. <Callout kind="value"> / <Callout kind="honesty">.
+ */
+interface Props {
+  kind: 'value' | 'honesty';
+}
+const { kind } = Astro.props;
+const label = kind === 'value' ? 'VALUE' : 'HONESTY';
+---
+
+<p class={`dc-callout dc-callout-${kind}`}>
+  <span class="dc-callout-label">{label}</span>
+  <span><slot /></span>
+</p>

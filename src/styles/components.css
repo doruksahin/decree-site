@@ -1,0 +1,190 @@
+/* decree-site component styles (global, dc- prefixed).
+   Kept global rather than Astro-scoped so they reliably style slotted MDX
+   content inside <BeforeAfter>, <Callout>, etc. */
+
+/* ── Callout: VALUE (green) / HONESTY (amber) ─────────────────────────────── */
+.dc-callout {
+  display: flex;
+  gap: 0.65rem;
+  align-items: baseline;
+  margin: 0.5rem 0;
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.4rem;
+  border-left: 3px solid var(--dc-accent);
+  background: color-mix(in srgb, var(--dc-accent) 9%, transparent);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.dc-callout .dc-callout-label {
+  flex: none;
+  font-family: var(--sl-font-mono);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  color: var(--dc-accent);
+  padding-top: 0.05rem;
+}
+.dc-callout-value { --dc-accent: var(--decree-green); }
+.dc-callout-honesty { --dc-accent: var(--decree-amber); }
+
+/* ── ExitBadge ────────────────────────────────────────────────────────────── */
+.dc-exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.8rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--dc-accent) 45%, var(--decree-line));
+  background: color-mix(in srgb, var(--dc-accent) 12%, transparent);
+  color: color-mix(in srgb, var(--dc-accent) 80%, #fff);
+}
+.dc-exit code {
+  font-weight: 700;
+  color: var(--dc-accent);
+  background: none;
+  padding: 0;
+  border: 0;
+}
+.dc-exit-0 { --dc-accent: var(--decree-green); }
+.dc-exit-1 { --dc-accent: var(--decree-amber); }
+.dc-exit-2 { --dc-accent: var(--decree-red); }
+
+/* ── BeforeAfter: the signature device ────────────────────────────────────── */
+.dc-ba {
+  margin: 1.5rem 0;
+  border: 1px solid var(--decree-line);
+  border-radius: 0.6rem;
+  overflow: hidden;
+  background: #0c0c10;
+}
+.dc-ba-scenario {
+  margin: 0;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  color: var(--sl-color-gray-2);
+  border-bottom: 1px solid var(--decree-line);
+  background: #0d0d12;
+}
+.dc-ba-scenario b,
+.dc-ba-scenario code { color: var(--decree-cyan); }
+.dc-ba-scenario .dc-ba-eyebrow {
+  font-family: var(--sl-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--decree-muted);
+  margin-right: 0.6rem;
+}
+.dc-ba-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.dc-ba-col { padding: 1rem 1.1rem; min-width: 0; }
+.dc-ba-col > h4 {
+  margin: 0 0 0.6rem;
+  font-family: var(--sl-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.dc-ba-col :where(p, li) { font-size: 0.92rem; }
+.dc-ba-before {
+  background: #0a0a0d;
+  color: var(--decree-muted);
+  border-right: 1px solid var(--decree-line);
+}
+.dc-ba-before > h4 { color: var(--decree-muted); }
+.dc-ba-before :where(strong) { color: var(--decree-red); font-weight: 600; }
+.dc-ba-after > h4 { color: var(--decree-green); }
+.dc-ba-after :where(strong) { color: var(--sl-color-white); }
+.dc-ba-foot { padding: 0.4rem 1.1rem 0.9rem; }
+.dc-ba-foot:empty { display: none; }
+
+@media (max-width: 50rem) {
+  .dc-ba-grid { grid-template-columns: 1fr; }
+  .dc-ba-before { border-right: 0; border-bottom: 1px solid var(--decree-line); }
+}
+
+/* ── CapabilityCard ───────────────────────────────────────────────────────── */
+.dc-cardgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.dc-card {
+  display: block;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--decree-line);
+  border-radius: 0.6rem;
+  background: #0d0d12;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.dc-card:hover {
+  border-color: color-mix(in srgb, var(--decree-cyan) 50%, var(--decree-line));
+  transform: translateY(-2px);
+}
+.dc-card h3 { margin: 0 0 0.35rem; font-size: 1.05rem; }
+.dc-card p { margin: 0 0 0.7rem; font-size: 0.92rem; color: var(--sl-color-gray-2); }
+.dc-card-cmd {
+  display: inline-block;
+  font-family: var(--sl-font-mono);
+  font-size: 0.8rem;
+  color: var(--decree-cyan);
+  background: #07070a;
+  border: 1px solid var(--decree-line);
+  border-radius: 0.3rem;
+  padding: 0.2rem 0.5rem;
+}
+
+/* ── LifecycleChain ───────────────────────────────────────────────────────── */
+.dc-chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+}
+.dc-chip {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--decree-line);
+  border-top: 2px solid var(--dc-chip-accent, var(--decree-cyan));
+  border-radius: 0.4rem;
+  background: #0d0d12;
+  font-family: var(--sl-font-mono);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.dc-chip small {
+  font-weight: 400;
+  font-size: 0.68rem;
+  color: var(--decree-muted);
+  letter-spacing: 0.02em;
+}
+.dc-chip-prd { --dc-chip-accent: #a371f7; }
+.dc-chip-adr { --dc-chip-accent: #56d4dd; }
+.dc-chip-spec { --dc-chip-accent: var(--decree-green); }
+.dc-chip-impl { --dc-chip-accent: var(--decree-amber); }
+.dc-chain .dc-arrow {
+  display: flex;
+  align-items: center;
+  color: var(--decree-muted);
+  font-family: var(--sl-font-mono);
+}
+
+/* ── Hero (landing) ───────────────────────────────────────────────────────── */
+.dc-hero-terminals {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}
+@media (min-width: 60rem) {
+  .dc-hero-terminals { grid-template-columns: 1fr 1fr; }
+}

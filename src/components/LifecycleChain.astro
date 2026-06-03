@@ -1,0 +1,26 @@
+---
+/**
+ * The decision lifecycle: PRD -> ADR -> SPEC -> Implementation, as chips.
+ * Pure presentation, no JS.
+ */
+const steps = [
+  { key: 'prd', label: 'PRD', sub: 'what / why' },
+  { key: 'adr', label: 'ADR', sub: 'how' },
+  { key: 'spec', label: 'SPEC', sub: 'blueprint' },
+  { key: 'impl', label: 'Code', sub: 'implementation' },
+];
+---
+
+<div class="dc-chain" role="img" aria-label="PRD to ADR to SPEC to implementation">
+  {
+    steps.map((s, i) => (
+      <>
+        <span class={`dc-chip dc-chip-${s.key}`}>
+          {s.label}
+          <small>{s.sub}</small>
+        </span>
+        {i < steps.length - 1 && <span class="dc-arrow" aria-hidden="true">→</span>}
+      </>
+    ))
+  }
+</div>

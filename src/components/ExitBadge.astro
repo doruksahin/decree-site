@@ -1,0 +1,20 @@
+---
+/**
+ * The exit-code contract as a pill. 0 = clean/advisory (green),
+ * 1 = a finding you can gate CI on (amber), 2 = config error (red).
+ */
+interface Props {
+  code: 0 | 1 | 2;
+}
+const { code } = Astro.props;
+const text: Record<number, string> = {
+  0: 'clean · advisory-only',
+  1: 'a finding you can gate CI on',
+  2: 'config error',
+};
+---
+
+<span class={`dc-exit dc-exit-${code}`}>
+  <code>exit {code}</code>
+  <span>{text[code] ?? text[1]}</span>
+</span>
