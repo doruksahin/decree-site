@@ -1,0 +1,93 @@
+---
+title: How decree relates to git and session-capture tools
+description: decree is git-grounded, not a git replacement. git tracks what changed; decree tracks which decision a change must honor — and whether it still does. Session-capture tools record what an agent did; decree declares what must hold and checks alignment. Different layers, not rivals.
+sidebar:
+  label: How it relates
+  order: 3
+---
+
+import Callout from '../../components/Callout.astro';
+import ExitBadge from '../../components/ExitBadge.astro';
+
+decree sits on top of tools you already use. It doesn't replace your version
+control, and it doesn't replace the record of what your agents did. It adds one
+thing neither of those answers: **which decision governs this file, and is the
+change still aligned with it.**
+
+## decree and git
+
+git tracks **what changed**. decree tracks **which decision that change has to
+honor** — and checks whether it still does.
+
+git is content-addressed: "commit `abc123` touched `src/foo.py`" is exact and
+reproducible. blame, log, and diff are this layer, and decree never tries to
+replace them. But git has no concept of a *decision*. It can show you that a file
+changed; it can't tell you which decision that change must answer to, or whether
+your edit still aligns.
+
+decree adds that layer. You declare a `governs:` field on a decision, mapping it to
+the paths it owns. Then `decree why src/auth/tokens.py` returns the governing
+decision deterministically — or abstains when nothing applies. `decree intent-check`
+catches a structural collision before you write a line, and `decree intent-review
+--diff` gates the finished diff, each exiting <ExitBadge code={1} /> when a change
+collides with governance.
+
+<div class="dc-two">
+  <div>
+    <strong>git answers</strong>
+    <p>What changed, when, by whom — as a guarantee.</p>
+  </div>
+  <div>
+    <strong>decree answers</strong>
+    <p>Which decision governs this file, and whether the change still honors it — as a gate.</p>
+  </div>
+</div>
+
+decree does read git history — for its `decree health` drift signals — but only as
+a **convention**, never as certainty. git guarantees which files a commit changed;
+the `Implements:/Refs:/Fixes:` trailer that links a commit to a decision is a
+convention you write, not something git enforces. So those signals stay
+deterministic to compute, advisory by design, and they never feed `why`.
+
+<Callout kind="honesty">"decree is git for decisions" would overclaim. git's properties are content-addressed guarantees; decree's file→decision map is a declaration, and its history-derived signals are convention-bounded. decree is git-<em>grounded</em>, not a git replacement — and it says so.</Callout>
+
+## decree and session-capture tools
+
+A newer class of tools — **[Entire](https://entire.io)** is the clearest example —
+captures the AI session behind each commit: the transcript, the prompts, the files
+touched, the tool calls, stored as searchable checkpoints in git. They solve a real
+problem: when the agent's context window closes, the reasoning evaporates, and git
+alone can't bring it back.
+
+decree solves a different half of the same problem. Session capture **records what
+an agent did** — descriptive, retrospective, faithful to the session. decree
+**declares what must be honored** — a normative decision that exists before any
+agent runs and outlives any single session — and deterministically **checks each
+change against it**, gating CI on the result.
+
+<div class="dc-two">
+  <div>
+    <strong>session capture records</strong>
+    <p>The session that produced a commit — what the agent did and reasoned. Evidence.</p>
+  </div>
+  <div>
+    <strong>decree declares + checks</strong>
+    <p>The decision a change must honor, and whether it still does. A constraint.</p>
+  </div>
+</div>
+
+Think of it as a flight recorder next to the flight rules. The recorder tells you
+what the pilot did; the rules tell you what the pilot may do, and a pre-flight check
+stops takeoff when the two conflict. You want both. One is the story of the change;
+the other is the line the change can't cross.
+
+They compose cleanly, and both are git-grounded. In a governed session, decree says
+"you're working under `SPEC-X`; this edit doesn't collide" before the write; a
+capture tool records the full session behind the resulting commit after. Months
+later, `decree why` returns the rule and the checkpoint returns the story. Capture
+tools can even strengthen decree's weakest link: because a harness knows which
+decision an agent was told to work under, it can write the canonical `Implements:`
+trailer at commit time — moving decree's commit→decision link from convention toward
+something enforced.
+
+<Callout kind="value">Keep the reasoning, and enforce the decision. Session capture preserves the why; decree declares the what-must-hold and checks alignment. Different layers of the same goal — not rivals.</Callout>

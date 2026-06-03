@@ -119,10 +119,30 @@ JSON to the CLI) and as Claude Code skills (`/decree:init`, `/decree:adr`, `/dec
 ## Deterministic, not “AI”
 
 decree has no model and no temperature. The same corpus and the same diff produce the same
-answer, every run. It reads declared facts and computes structural overlap — it never asks a
-language model what your code probably means, and it never judges whether your change is
+answer, every run. It reads declared facts and computes structural overlap; where it reads
+git history (for drift signals), it labels the result advisory, never certain. It never asks
+a language model what your code probably means, and it never judges whether your change is
 *correct*, only whether it collides. That single boundary — **answers only from what's
 declared** — is exactly what makes its output safe to gate CI on.
+
+## Isn't this just git?
+
+decree doesn't replace git. It runs on top of it.
+
+git tracks **what changed** — blame, log, and diff, as a content-addressed guarantee. decree
+tracks **which decision that change has to honor**, and checks whether it still does. git can
+show you that `src/auth/tokens.py` changed. It can't tell you which decision that change must
+answer to, or whether your edit still aligns with it. decree maps the file to its governing
+decision from a declared `governs:` field, and gates the change that collides.
+
+decree reads git history too — for advisory drift signals — but only as a convention, never
+as certainty. git guarantees which files a commit changed; the `Implements:` trailer that
+links a commit to a decision is a convention you write, not something git enforces. So those
+signals stay advisory by design.
+
+<div class="dc-cta">
+  <a class="dc-cta-secondary" href="/how-it-relates/">How decree relates to git and to session-capture tools →</a>
+</div>
 
 ## Why decree, and not just a folder of ADRs?
 

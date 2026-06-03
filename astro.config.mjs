@@ -49,6 +49,7 @@ export default defineConfig({
         { label: 'Capabilities', items: [{ autogenerate: { directory: 'capabilities' } }] },
         { label: 'For agents & CI', link: '/agents/' },
         { label: 'Why decree', link: '/why-decree/' },
+        { label: 'How it relates', link: '/how-it-relates/' },
         { label: 'decree by example', link: '/examples/' },
       ],
     }),
