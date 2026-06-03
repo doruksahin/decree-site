@@ -1,0 +1,49 @@
+/* decree-site global styles.
+   Cascade-layer order below is load-bearing: it lets Tailwind utilities win over
+   Starlight where intended, while Starlight's base styles stay intact.
+   See docs/plans/2026-06-03-decree-site-design.md §2. */
+@layer base, starlight, theme, components, utilities;
+
+/* Self-hosted fonts (Fontsource) */
+@import '@fontsource-variable/inter';
+@import '@fontsource/jetbrains-mono';
+
+/* Tailwind v4 + Starlight compatibility */
+@import '@astrojs/starlight-tailwind';
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@theme {
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+/* ── Brand tokens (unlayered → beat Starlight defaults) ───────────────────── */
+:root {
+  --decree-green: #3fb950; /* VALUE */
+  --decree-amber: #d29922; /* HONESTY */
+  --decree-red: #f85149; /* the one moment the old way breaks */
+  --decree-cyan: #56d4dd; /* command prompt / links */
+  --decree-muted: #8b949e; /* the "before" / dim chrome */
+  --decree-line: #1f2430; /* hairline borders */
+
+  --sl-font: 'Inter Variable', system-ui, sans-serif;
+  --sl-font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+/* Dark is the primary, on-brand theme. */
+:root[data-theme='dark'] {
+  --sl-color-bg: #0a0a0b;
+  --sl-color-bg-nav: #0d0d10;
+  --sl-color-bg-sidebar: #0d0d10;
+  --sl-color-hairline: var(--decree-line);
+  --sl-color-text-accent: #56d4dd;
+  --sl-color-accent: #2bb6c0;
+  --sl-color-accent-high: #7fe7ee;
+}
+
+/* Light theme stays usable but is not the headline aesthetic. */
+:root[data-theme='light'] {
+  --sl-color-accent: #0b7285;
+  --sl-color-accent-high: #084c5c;
+}
