@@ -361,12 +361,49 @@ gen_dogfood() {
   )
 }
 
+# Corpus H — an in-flight SPEC governs tokens.py; a change is committed with and
+#            without the Implements: trailer  (commit-check, CI mode --diff-base)
+gen_commit_check() {
+  q make_demo_repo
+  spec spec-00000000000000000000000001-jwt-token-storage.md <<'EOF'
+---
+id: SPEC-00000000000000000000000001
+status: approved
+date: 2026-05-10
+governs:
+  - src/auth/tokens.py
+---
+
+# SPEC-00000000000000000000000001 JWT token storage
+
+## Overview
+
+Refresh tokens are rotated and stored hashed.
+EOF
+  echo "def store(token): ..." > src/auth/tokens.py
+  q git add -A; q git commit -qm "init: auth"
+  q "$DECREE" index rebuild
+  # the change is committed WITHOUT a trailer -> the gate fails
+  echo "def store(token): rotate(token)" > src/auth/tokens.py
+  q git commit -aqm "feat: rotate refresh tokens"
+  q "$DECREE" index rebuild
+  snip commit-check-fail.ansi commit-check --diff-base HEAD~1 --strict
+  # redo the change WITH the trailer -> the gate passes
+  q git reset --hard HEAD~1
+  echo "def store(token): rotate(token)" > src/auth/tokens.py
+  q git commit -aqm "feat: rotate refresh tokens" \
+    --trailer "Implements: SPEC-00000000000000000000000001"
+  q "$DECREE" index rebuild
+  snip commit-check-pass.ansi commit-check --diff-base HEAD~1 --strict
+}
+
 # Each in a subshell so make_demo_repo's cd + cleanup trap stay isolated.
 ( gen_why )
 ( gen_conflict )
 ( gen_isolate )
 ( gen_health )
 ( gen_governs_gap )
+( gen_commit_check )
 ( gen_lifecycle )
 gen_dogfood
 

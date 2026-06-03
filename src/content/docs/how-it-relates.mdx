@@ -63,7 +63,10 @@ decree solves a different half of the same problem. Session capture **records wh
 an agent did** — descriptive, retrospective, faithful to the session. decree
 **declares what must be honored** — a normative decision that exists before any
 agent runs and outlives any single session — and deterministically **checks each
-change against it**, gating CI on the result.
+change against it**, gating CI on the result. It even gates the *link itself*:
+[`decree commit-check`](/capabilities/commit-check/) fails CI when a governed change
+carries no `Implements:` trailer naming its decision — coverage you can gate, not a
+guarantee.
 
 <div class="dc-two">
   <div>

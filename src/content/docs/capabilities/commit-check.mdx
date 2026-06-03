@@ -1,0 +1,106 @@
+---
+title: commit-check — link every governed change to its decision
+description: "Gate CI on trailer coverage: which governed-file changes carry an Implements:/Refs:/Fixes: trailer linking them to their in-flight decision. Advisory by default; --strict/--min-coverage gate the net diff. Coverage you can gate, not a guarantee."
+sidebar:
+  label: commit-check
+  order: 4
+---
+
+import Ansi from '../../../components/Ansi.astro';
+import Callout from '../../../components/Callout.astro';
+import ExitBadge from '../../../components/ExitBadge.astro';
+import BeforeAfter from '../../../components/BeforeAfter.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+**`decree commit-check` gates the commit→decision link itself.** git guarantees *what*
+changed; the `Implements:/Refs:/Fixes:` trailer that says *which decision a change
+implements* is an unenforced convention. commit-check measures whether that link is
+present — and lets CI require it.
+
+{/* ── 2. The signature device ─────────────────────────────────────────────── */}
+<BeforeAfter scenario="A change to <code>src/auth/tokens.py</code> (governed by an in-flight SPEC) is about to merge.">
+  <Fragment slot="before">
+    The commit lands with **no trailer**. git records the diff, but nothing links it to
+    the decision it implements. The "why" is **lost** — `decree refs` shows the SPEC with
+    zero implementing commits, and `health` can't even flag it (it's "unobserved, not
+    dead"). The provenance silently rots.
+  </Fragment>
+  <Fragment slot="after">
+    CI runs `decree commit-check --diff-base origin/main --strict` on the net diff and
+    fails when a governed change has no matching trailer:
+
+    <Ansi name="snippets/commit-check-fail" />
+  </Fragment>
+  <Fragment slot="foot">
+    <Callout kind="value">The weakest link in decree's provenance — the commit→decision trailer — becomes a check CI can require, at the one moment the decision is knowable.</Callout>
+    <Callout kind="honesty">It is **coverage you can gate, not a guarantee**: `git commit --no-verify` and CI overrides exist, so it measures and enforces *where you run it* — it cannot make the link true. It reads only declared `governs:`; a ticket is not a decision and decree never maps one.</Callout>
+  </Fragment>
+</BeforeAfter>
+
+{/* ── 5. The concept ──────────────────────────────────────────────────────── */}
+## How it works
+
+commit-check intersects a diff's changed paths with the **declared** `governs:` map (via
+`why`, the authoritative layer — never git history as truth), keeping only **in-flight**
+decisions. For each governed change it checks whether the commit message(s) carry a
+matching `Implements:/Refs:/Fixes:` trailer. The primary mode is `--diff-base origin/main`:
+it gathers trailers across the whole commit range, so it **survives squash-merge**. It is
+**advisory by default** — `--strict` (require 100%) or `--min-coverage N` (ratchet up over
+time on a legacy repo) turn an uncovered change into a finding.
+
+{/* ── 6. Run it ───────────────────────────────────────────────────────────── */}
+## Run it
+
+<Tabs>
+  <TabItem label="missing trailer (exit 1)">
+    Under `--strict`, a governed change with no linking trailer fails:
+
+    <Ansi name="snippets/commit-check-fail" />
+  </TabItem>
+  <TabItem label="trailer present (exit 0)">
+    Commit through `decree commit` (or add the trailer) and it passes:
+
+    <Ansi name="snippets/commit-check-pass" />
+  </TabItem>
+</Tabs>
+
+The same check is exposed over MCP as the `commit_check` tool, with the identical JSON
+payload, so an agent gates its own loop.
+
+{/* ── 7. When you'd reach for this ────────────────────────────────────────── */}
+## When you'd reach for this
+
+- **As a CI gate on every PR** — require that governed changes name the decision they implement (`--strict`), so provenance can't silently rot.
+- **In an agent loop** — the actor most likely to drop a trailer; gate it deterministically.
+- **Adopting on a legacy repo** — start with `--min-coverage` at today's number and ratchet up, no flag day.
+
+{/* ── 8. Reference ────────────────────────────────────────────────────────── */}
+## Flags & exit codes
+
+Advisory by default: it exits <ExitBadge code={0} /> and reports unless you opt into a
+gate. With `--strict` or `--min-coverage`, an uncovered governed change exits
+<ExitBadge code={1} />. A config error (missing index, no trailer source) exits
+<ExitBadge code={2} />.
+
+<details>
+<summary>All flags</summary>
+
+| Flag | What it does |
+|------|--------------|
+| `--diff-base REF` | CI mode: paths from `git diff REF...HEAD`, trailers unioned across the commit range (squash-safe). |
+| `--diff PATH` | A unified diff file (`-` = stdin); pair with `--message`. |
+| `--message PATH` | The candidate commit message (for a `commit-msg` hook). |
+| `--strict` | Require 100% coverage; any uncovered governed change exits 1. |
+| `--min-coverage N` | Require ≥ N% coverage (ratchet for gradual adoption). |
+| `--json` | Stable machine payload (same as the MCP tool). |
+| `--project PATH` | Operate on the project at this path. |
+
+decree does not install a git hook (that's the harness's job). To enforce locally, opt
+in with a one-line `commit-msg` hook calling `decree commit-check --message "$1" --strict`.
+
+</details>
+
+---
+
+Next: [`health`](/capabilities/health/) — has a decision's declared scope rotted over
+time? Or see [how decree relates to git and session-capture tools](/how-it-relates/).

@@ -1,0 +1,10 @@
+
+[1;36m$ decree commit-check --diff-base HEAD~1 --strict[0m
+[commit-check] exit 1: trailer coverage below threshold.
+Commit check — diff-base
+Trailer coverage (0/1, 0%)
+
+Uncovered (1):
+  • src/auth/tokens.py → SPEC-00000000000000000000000001 (JWT token storage)
+    Consider `decree commit --implements SPEC-00000000000000000000000001` so the commit links to the SPEC.
+[2m→ exit 1[0m

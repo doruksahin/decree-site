@@ -1,8 +1,8 @@
 
 [1;36m$ decree progress[0m
-[progress] loaded 30 documents
+[progress] loaded 32 documents
 [progress] scope: all documents
-✓ 414/414 primary items complete (100%) across 30 documents
+✓ 425/425 primary items complete (100%) across 32 documents
 [progress] 0/88 deferred items separated from primary progress
 [progress] use --doc ID, --chain ID, --changed --base REF, or --governs PATH to narrow parallel work
 Scope: all documents
@@ -11,6 +11,7 @@ Scope: all documents
   ADR-01KT22NMRV8ZFMDKV0WNFNGMCJ   Use Distributed Frontmatter IDs for P...  accepted     ░░░░░░░░░░   — 
   ADR-01KT22NMRV9CP14X5982JJH161   Index-First Architecture for Decree Q...  accepted     ░░░░░░░░░░   — 
   ADR-01KT2JRPKC8ZWK48YFXXKS7ZGV   Cross-session live-conflict detection...  accepted     ░░░░░░░░░░   — 
+  ADR-01KT7E7RD6NYASNDWVE0PQ7J8G   Commit-check as a CI coverage gate, n...  accepted     ░░░░░░░░░░   — 
   PRD-01KT22NMRR0BX7KBF0F0N5ER6Z   DDD CLI Command and Proofshot Integra...  implemented  ██████████ 100% (17/17 primary)
   PRD-01KT22NMRR63TXR7NX5XYRG5FK   C4 Architecture Support                   implemented  ░░░░░░░░░░   — 
   PRD-01KT22NMRS4QGHSFDBZ858PP1T   Queryable Decision Provenance Graph       implemented  ░░░░░░░░░░   — 
@@ -37,5 +38,6 @@ Scope: all documents
   SPEC-01KT6EEAHKWDQB2Y6S4TTKB77D  Observed-governs Index and Dead-gover...  implemented  ██████████ 100% (12/12 primary); deferred 0/4
   SPEC-01KT6NCQC7DMJ3NG1MPWBGBVFQ  Missing governance suggestions from o...  implemented  ██████████ 100% (12/12 primary); deferred 0/6
   SPEC-01KT6TCFMWAV6N8G5DR5QMX1P5  Point-of-change governs-gap suggestio...  implemented  ██████████ 100% (11/11 primary); deferred 0/4
+  SPEC-01KT7E7SQ7QVXZYK2Q0Y37QD3J  Trailer-coverage gate via decree comm...  implemented  ██████████ 100% (11/11 primary)
 
 [2m→ exit 0[0m

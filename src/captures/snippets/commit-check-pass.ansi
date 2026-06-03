@@ -1,0 +1,5 @@
+
+[1;36m$ decree commit-check --diff-base HEAD~1 --strict[0m
+Commit check — diff-base
+Trailer coverage (1/1, 100%)
+[2m→ exit 0[0m

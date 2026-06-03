@@ -2,8 +2,8 @@
 [1m── The corpus: SPEC-…0001's own commits repeat-touch a helper it never declares ──[0m
 [index] rebuilding into .decree/index.sqlite
 [index] decisions=1  refs=0  governs=1  acs=0  commits=2
-[index] git_sync_ms=65
-✓ index rebuilt in 78ms
+[index] git_sync_ms=55
+✓ index rebuilt in 68ms
 
 [1m── In a governed session under SPEC-…0001, planning to edit the helper (advisory, exit 0) ──[0m
 
