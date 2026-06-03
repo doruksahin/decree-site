@@ -1,0 +1,40 @@
+# Link health + cross-repo drift catcher.
+#
+# Runs lychee over the site's markdown, including docs/decree-references.md — the
+# strict manifest of decree files this site depends on. Those references resolve
+# into a sibling ../decree checkout, so a rename/move/delete in decree breaks a
+# link and fails this job. That is the drift catcher: the site can't ship a stale
+# claim about decree without CI noticing.
+name: Links & cross-repo drift
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch: {}
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout decree-site
+        uses: actions/checkout@v4
+        with:
+          path: decree-site
+
+      # The cross-repo references in docs/decree-references.md resolve to ../decree,
+      # the same sibling-layout assumption scripts/capture.sh makes.
+      - name: Checkout decree (sibling)
+        uses: actions/checkout@v4
+        with:
+          repository: doruksahin/decree
+          path: decree
+
+      - name: Lychee — link health + cross-repo drift
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # local (relative) links are checked regardless of network, so the
+          # ../decree references are validated here too.
+          args: --config .lychee.toml --no-progress './**/*.md'
+          workingDirectory: decree-site
+          fail: true

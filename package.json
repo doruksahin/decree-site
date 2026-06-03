@@ -7,7 +7,10 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "capture": "bash scripts/capture.sh",
+    "check:refs": "lychee --config .lychee.toml --offline --no-progress docs/decree-references.md",
+    "check:links": "lychee --config .lychee.toml --no-progress '**/*.md'"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.39.3",

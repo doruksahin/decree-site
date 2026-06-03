@@ -1,0 +1,18 @@
+# lychee link-checker config — mirrors the decree repo's .lychee.toml.
+#
+# Beyond ordinary link health, this checks docs/decree-references.md: a strict,
+# relative-linked manifest of the decree files this site depends on. Because the
+# links resolve into the sibling ../decree checkout, a rename/move/delete in decree
+# breaks the link and fails the check — a cross-repo drift catcher.
+#
+#   npm run check:refs    # offline, deterministic — just the cross-repo references
+#   npm run check:links   # full markdown link health (online), mirrors decree
+offline = false
+include_fragments = true
+include_verbatim = false
+extensions = ["md"]
+glob_ignore_case = true
+exclude_path = ["^node_modules/", "^dist/", "^\\.astro/", "^docs/plans/"]
+max_retries = 2
+retry_wait_time = 2
+max_concurrency = 32
