@@ -1,0 +1,96 @@
+---
+title: why — which decision explains this file
+description: Map any file to the decisions that govern it, before you touch it. why answers only from declared governs:, and abstains when nothing applies.
+sidebar:
+  label: why
+  order: 1
+---
+
+import Ansi from '../../../components/Ansi.astro';
+import Callout from '../../../components/Callout.astro';
+import ExitBadge from '../../../components/ExitBadge.astro';
+import BeforeAfter from '../../../components/BeforeAfter.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+**`decree why <file>` maps a path to the decisions that govern it — before you edit a
+line.** It is the first question to ask about unfamiliar code: *why is this the way it
+is, and is my change allowed?*
+
+{/* ── 2. The signature device: one scenario, two ways ─────────────────────── */}
+<BeforeAfter scenario="You're about to edit <code>src/auth/tokens.py</code>. Why are tokens hashed, not encrypted?">
+  <Fragment slot="before">
+    You **don't know**. So you `git blame`, open three stale PRs, grep the wiki, and
+    ping a teammate who left last quarter. Twenty minutes gone, and you're **still
+    guessing** whether your change is allowed.
+  </Fragment>
+  <Fragment slot="after">
+    One command returns the exact governing decision, attached to the file:
+
+    <Ansi name="snippets/why-hit" />
+  </Fragment>
+  <Fragment slot="foot">
+    <Callout kind="value">The reason behind the code is one query away — not buried in chat history or a teammate's memory.</Callout>
+    <Callout kind="honesty">`why` answers only from declared `governs:` frontmatter — never git, never semantic guessing. It cannot tell you the decision is still *correct*, only that it governs this path.</Callout>
+  </Fragment>
+</BeforeAfter>
+
+{/* ── 5. The concept ──────────────────────────────────────────────────────── */}
+## How it works
+
+`why` queries decree's provenance index for every decision whose `governs:` list
+covers the path you give it. An exact path match outranks a prefix (directory) match,
+and results are ordered by status priority, then most recent first. You can scope to a
+symbol with `path#symbol`. That's the whole model: declared scope in, governing
+decisions out.
+
+{/* ── 6. Run it ───────────────────────────────────────────────────────────── */}
+## Run it
+
+<Tabs>
+  <TabItem label="why <file>">
+    Human-readable: the governing decision, its status, and its declared scope.
+
+    <Ansi name="snippets/why-hit" />
+  </TabItem>
+  <TabItem label="why --json">
+    The same answer as structured JSON, for an agent or a CI step to consume.
+
+    <Ansi name="snippets/why-json" />
+  </TabItem>
+</Tabs>
+
+When nothing governs the path, that is a real answer — not a failure. `why` returns an
+empty result and exits `0`. It will not invent a decision to look helpful.
+
+<Ansi name="snippets/why-abstain" />
+
+{/* ── 7. When you'd reach for this ────────────────────────────────────────── */}
+## When you'd reach for this
+
+- **Before editing a file you didn't write** — surface the constraint before you break it.
+- **In code review** — confirm a diff's files are governed by the decision the PR claims.
+- **When an agent proposes a change** — give it the governing decision as context, deterministically.
+
+{/* ── 8. Reference (kept separate from the explanation above) ──────────────── */}
+## Flags & exit codes
+
+`why` is a query, not a gate: it exits <ExitBadge code={0} /> whether or not it finds a
+governing decision. An empty result is a valid abstention, never an error.
+
+<details>
+<summary>All flags</summary>
+
+| Flag | What it does |
+|------|--------------|
+| `<path>` | Repo-relative path to query, optionally `path#symbol`. |
+| `--json` | Emit JSON for programmatic consumers. |
+| `--project PATH` | Operate on the project at this path (default: cwd). |
+| `--with-abstention` | Route through calibrated retrieval; abstain when confidence is below threshold. |
+| `--target-precision P` | Desired precision floor for non-abstain responses. |
+
+</details>
+
+---
+
+Next: [`intent-check`](/capabilities/intent-check/) — catch a collision *before* you
+write a line.
