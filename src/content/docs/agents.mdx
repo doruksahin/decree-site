@@ -149,25 +149,27 @@ A query result is a shape an agent can branch on directly:
 `matches` empty means no decision governs the path. `conflicts` empty means no collision.
 Both are valid answers — read the next section.
 
-## In Claude Code
+## In Codex and Claude Code
 
-decree ships as a Claude Code plugin with skills for AI-assisted document work.
+Bootstrap project-local agent skills with the normal init flow:
 
-| Skill | What it does |
-|-------|--------------|
-| `/decree:init` | Scaffold a `decree/` folder with working examples. |
-| `/decree:prd` | Create a PRD with section guidance and lint validation. |
-| `/decree:adr` | Create an ADR with reference discovery across existing docs. |
-| `/decree:spec` | Create a SPEC with stale-reference warnings. |
-| `/decree:lint` | Validate all documents, creating a task per error found. |
-| `/decree:ddd` | Check project state and guide the next step in the PRD→ADR→SPEC flow. |
+```bash
+decree init --with-agents
+```
 
-`/decree:init` is a Claude Code skill, not a CLI subcommand. There is no `decree init`
-command — the skill scaffolds the folder for you.
+For an existing decree project, install or refresh them explicitly:
 
-For agents outside Claude Code, the portable skill `decree-governs-suggest` generates
-agent-side `governs:` suggestions from decree's `analyze` JSON contract. The agent owns
-the model call; decree validates the suggestions and owns the write.
+```bash
+decree agents install --target all --scope project
+decree agents status --target all --scope project
+```
+
+This writes reviewable files under `.codex/skills` and `.claude/skills`. It does not add
+Claude Code hooks unless you pass `--hooks`.
+
+The generated skills guide PRD, ADR, SPEC, lint, and governed implementation work. Portable
+agent flows can still use `decree-governs-suggest`: the agent owns the model call, and decree
+validates the suggestions and owns the write.
 
 ## Why agents can trust it
 
@@ -194,7 +196,7 @@ rebuild — never a silent guess. decree would rather refuse than fabricate.
   <CapabilityCard title="Why it abstains" href="/capabilities/why/" cmd="decree why src/auth/tokens.py">
     The model behind every answer — declared facts in, governing decisions out, an empty result when nothing applies.
   </CapabilityCard>
-  <CapabilityCard title="Start here" href="/start/" cmd="uv tool install git+https://github.com/doruksahin/decree">
-    Install decree, declare your decision types, and wire this loop into your agents and CI.
+  <CapabilityCard title="Start here" href="/start/" cmd="brew install doruksahin/decree/decree">
+    Install decree, initialize a project, and wire this loop into your agents and CI.
   </CapabilityCard>
 </CardGrid>

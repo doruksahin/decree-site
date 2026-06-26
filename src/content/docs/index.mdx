@@ -23,10 +23,10 @@ import { Code } from '@astrojs/starlight/components';
     <a class="dc-btn-ghost" href="/examples/">See it by example</a>
   </Fragment>
   <Fragment slot="install">
-    <Code code="uv tool install git+https://github.com/doruksahin/decree" lang="bash" />
+    <Code code="brew install doruksahin/decree/decree" lang="bash" />
   </Fragment>
   <Fragment slot="note">
-    Installs from source — the bare name <code>decree</code> on PyPI is an unrelated project.
+    Installs v2.0.0 from the decree Homebrew tap. Source installs are on Start here.
   </Fragment>
   <Fragment slot="demo">
     <Ansi name="snippets/why-hit" title="ask which decision governs a file" />
@@ -113,7 +113,7 @@ has to read.
 An LLM agent editing your code has no memory of the decisions it's about to break. decree
 gives it a deterministic check to run before and after every edit — and the exit code gates
 the loop. The same checks are exposed over MCP (`decree mcp serve`: eight tools, identical
-JSON to the CLI) and as Claude Code skills (`/decree:init`, `/decree:adr`, `/decree:ddd`, …).
+JSON to the CLI) and project-local Codex/Claude skills installed by `decree init --with-agents`.
 
 <div class="dc-cta">
   <a class="dc-cta-primary" href="/agents/">decree for agents &amp; CI →</a>

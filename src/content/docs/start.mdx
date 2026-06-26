@@ -1,85 +1,62 @@
 ---
 title: Start here
-description: Install decree, define your decision types, and wire it into the loop your agents and CI run.
+description: Install decree, initialize a project, and run the first governance checks.
 sidebar:
   order: 0
 ---
 
-import { Tabs, TabItem, Steps } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
 
-decree is a Python CLI. It reads markdown decisions and a `decree.toml`, and answers from
-what's declared. There is no service to run and no model to call.
+decree is a Python CLI. It reads markdown decisions and answers from what is declared.
+There is no service to run and no model to call.
 
 ## Install
 
-Install with Homebrew, or from the GitHub repo — the name `decree` on PyPI is an unrelated
-third-party project, so it is not installed from there:
+Use Homebrew. The name `decree` on PyPI belongs to an unrelated project.
 
-<Tabs>
-  <TabItem label="brew">
-    ```bash
-    brew install doruksahin/decree/decree
-    decree --version
-    ```
-  </TabItem>
-  <TabItem label="uv">
-    ```bash
-    uv tool install git+https://github.com/doruksahin/decree
-    decree --version
-    ```
-  </TabItem>
-  <TabItem label="pipx">
-    ```bash
-    pipx install git+https://github.com/doruksahin/decree
-    decree --version
-    ```
-  </TabItem>
-</Tabs>
+```bash
+brew install doruksahin/decree/decree
+decree --version
+```
+
+If you cannot use Homebrew, install from source:
+
+```bash
+uv tool install git+https://github.com/doruksahin/decree
+```
 
 ## Set up a project
 
 <Steps>
 
-1. **Define your decision types** in `decree.toml` at the project root. Types are
-   yours — prefix, statuses, transitions, and required sections are all config.
-
-   ```toml title="decree.toml"
-   [types.spec]
-   dir = "decree/spec"
-   prefix = "SPEC"
-   initial_status = "draft"
-   statuses = ["draft", "approved", "implemented"]
-   required_sections = ["Overview"]
-
-   [types.spec.transitions]
-   draft = ["approved"]
-   approved = ["implemented"]
-   implemented = []
-
-   [types.spec.actions]
-   approve = "approved"
-   implement = "implemented"
-   ```
-
-   Not limited to one type — define `prd`, `adr`, `spec`, or anything your team uses.
-   The full schema is in the [repository docs](https://github.com/doruksahin/decree).
-
-2. **Create a decision.** New files are named `{id}-{slug}.md`, so parallel branches
-   never fight over the next number.
+1. **Go to your repository.**
 
    ```bash
-   decree new spec "Token Storage API"
+   cd my-app
    ```
 
-3. **Declare what it governs** in the frontmatter, so `why` and the intent checks can
-   find it:
+2. **Initialize decree.** This writes `decree.toml`, example PRD/ADR/SPEC docs, the
+   local index cache, and project-local Codex/Claude skills.
 
-   ```yaml title="decree/spec/spec-….md"
-   governs:
-     - src/auth/tokens.py
+   ```bash
+   decree init --with-agents
    ```
 
-4. **Build the query index** that `why`, `health`, and the intent checks read from:
+3. **Check the scaffold.**
+
+   ```bash
+   decree lint
+   ```
+
+4. **Create your first decision chain.**
+
+   ```bash
+   decree new prd "User Authentication" --bucket auth
+   decree new adr "Use JWT sessions" --bucket auth
+   decree new spec "Token Storage API" --bucket auth
+   ```
+
+5. **Rebuild the query index after document edits.**
 
    ```bash
    decree index rebuild
