@@ -10,7 +10,7 @@ import Ansi from '../../../components/Ansi.astro';
 import Callout from '../../../components/Callout.astro';
 import ExitBadge from '../../../components/ExitBadge.astro';
 import BeforeAfter from '../../../components/BeforeAfter.astro';
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components';
 
 **`decree sprint` tracks what is actively being built without turning sprint state into
 one shared merge-conflict file.** In v3, the sprint store is a directory:
@@ -35,6 +35,57 @@ one shared merge-conflict file.** In v3, the sprint store is a directory:
     <Callout kind="honesty">Rollover is still an integration ceremony. v3 removes the routine ledger hotspot; it does not introduce multiple active sprints or per-worktree lanes.</Callout>
   </Fragment>
 </BeforeAfter>
+
+## Operator flow
+
+The HTML board is for the human orchestrator, not an agent protocol. Agents should use
+the CLI or MCP tools so their loop can branch on exit codes and JSON. A typical parallel
+sprint looks like this:
+
+<Steps>
+
+1. **Refresh the read-only board when a human wants the current picture.**
+
+   ```bash
+   decree generate-html --output decree-board.html
+   ```
+
+   Open the file locally, choose an open sprint item, and assign that document ID to an
+   agent. The board is an inspection surface: it does not mutate sprint state.
+
+2. **Let the first worker scope itself to one item.**
+
+   ```bash
+   decree ddd --doc SPEC-01KT22NMS0D19VMD8VPK4D2MNX
+   decree intent-check --plan "implement token storage" \
+     --files src/auth/tokens.py \
+     --under SPEC-01KT22NMS0D19VMD8VPK4D2MNX
+   ```
+
+   The agent starts only after the governing scope and plan check are clear.
+
+3. **Start another worker in another worktree on a different sprint item.**
+
+   ```bash
+   git worktree add ../my-app-token-rotation -b work/token-rotation
+   cd ../my-app-token-rotation
+   decree ddd --doc SPEC-01KW2BEQ5J7JWM93K4YAS9GZAB
+   ```
+
+   Because each sprint membership is its own `live/<DOC-ID>.yaml`, the two workers do
+   not race on one shared `ledger.yaml`.
+
+4. **Record completion per item, then integrate.**
+
+   ```bash
+   decree sprint complete SPEC-01KT22NMS0D19VMD8VPK4D2MNX --commit abc1234
+   decree lint
+   ```
+
+   After branches merge, the orchestrator runs `decree lint`, refreshes the board if
+   useful, and performs rollover once from the integration branch.
+
+</Steps>
 
 ## Run it
 

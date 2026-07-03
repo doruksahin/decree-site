@@ -63,8 +63,8 @@ src/
   components/          Ansi, BeforeAfter, Callout, ExitBadge, CapabilityCard, LifecycleChain
   content/docs/
     index.mdx          landing / pitch
-    start.mdx          install + the agent loop
-    examples.mdx       six governance scenarios plus the v3 sprint execution workflow
+    start.mdx          install + the agent loop + human board handoff
+    examples.mdx       six governance scenarios plus the v3 sprint execution/orchestrator workflow
     capabilities/      one page per capability (the 9-section spine)
   styles/              global.css (tokens, dark default) + components.css
 scripts/capture.sh     regenerates src/captures from real decree runs

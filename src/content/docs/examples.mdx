@@ -101,6 +101,13 @@ The v3 sprint store replaces the old shared `ledger.yaml` with `state.yaml`,
 membership file, so different worktrees can add or finish different documents without
 creating one YAML conflict hotspot. <ExitBadge code={0} />
 
+In practice, a human orchestrator can refresh the local HTML board when they want a
+snapshot, pick one open sprint item, and hand that document ID to a worker agent. The
+agent does not need the HTML; it starts from `decree ddd --doc DOC-ID`, runs
+`intent-check` before editing, and records its own `sprint complete` outcome when the
+acceptance criteria are done. A second worker can do the same from another worktree on a
+different `DOC-ID`.
+
 <Tabs>
   <TabItem label="open sprint">
     <Ansi name="snippets/sprint-status-open" />

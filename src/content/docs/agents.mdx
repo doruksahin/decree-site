@@ -95,6 +95,63 @@ The gate is the exit code. `intent-check` and `intent-review` are queries and ex
 do with the JSON. `lint` and dead governance exit <ExitBadge code={1} />, which is what
 you fail a build on. A broken `decree.toml` exits <ExitBadge code={2} />.
 
+## Human orchestrator, worker agents
+
+In a parallel agent run, the HTML board is for the person supervising the run. Agents do
+not need to look at it. They should receive a document ID and use decree's CLI or MCP
+surface as their contract.
+
+<Steps>
+
+1. **The orchestrator refreshes the board when they want a snapshot.**
+
+   ```bash
+   decree generate-html --output decree-board.html
+   decree sprint status
+   ```
+
+   The board shows open sprint items, buckets, status, acceptance-criteria progress, and
+   done items awaiting rollover. It is read-only.
+
+2. **A worker agent gets one sprint item.**
+
+   ```bash
+   decree ddd --doc SPEC-01KT22NMS0D19VMD8VPK4D2MNX
+   decree intent-check --plan "implement token storage" \
+     --files src/auth/tokens.py \
+     --under SPEC-01KT22NMS0D19VMD8VPK4D2MNX --json
+   ```
+
+   If the recommended action is clear, it implements that item. If the check says
+   `isolate_session`, `resolve_conflict_first`, or `update_spec_first`, the loop stops
+   before code is written.
+
+3. **Another worker gets another item in another worktree.**
+
+   ```bash
+   git worktree add ../my-app-auth-refresh -b work/auth-refresh
+   cd ../my-app-auth-refresh
+   decree ddd --doc SPEC-01KW2BEQ5J7JWM93K4YAS9GZAB
+   ```
+
+   The v3 sprint store keeps those memberships in separate `live/<DOC-ID>.yaml` files,
+   so routine enrollment and completion merge as a union of files.
+
+4. **Each worker records its own outcome.**
+
+   ```bash
+   decree sprint complete SPEC-01KT22NMS0D19VMD8VPK4D2MNX --commit abc1234
+   decree intent-review --json
+   decree lint
+   ```
+
+   The orchestrator integrates branches, runs `decree lint`, refreshes the board if
+   useful, and performs sprint rollover once from the merged state.
+
+</Steps>
+
+<Callout kind="honesty">The generated board is an operator view, not a live scheduler and not a mutation surface. Agents should branch on CLI/MCP output, not on the HTML.</Callout>
+
 ## Over MCP
 
 `decree mcp serve` exposes the query and analysis surface to an agent over stdio. Eight

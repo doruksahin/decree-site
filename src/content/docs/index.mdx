@@ -89,7 +89,7 @@ decree captures decisions as a chain and links each one to the code it governs:
     Create, validate, and track decisions: lint, status, progress, refs, graph.
   </CapabilityCard>
   <CapabilityCard title="sprint execution" cmd="decree sprint complete" href="/capabilities/sprints/">
-    Track active work in a parallel-safe sprint store with one file per membership.
+    Dispatch worker agents from a sprint item without a shared ledger conflict.
   </CapabilityCard>
 </div>
 
@@ -117,6 +117,9 @@ An LLM agent editing your code has no memory of the decisions it's about to brea
 gives it a deterministic check to run before and after every edit — and the exit code gates
 the loop. The same checks are exposed over MCP (`decree mcp serve`: eight tools, identical
 JSON to the CLI) and project-local Codex/Claude skills installed by `decree init --with-agents`.
+For parallel work, a human orchestrator can refresh the read-only HTML board to inspect
+the sprint, then hand each worker agent one document ID. The agents stay on CLI/MCP:
+`decree ddd --doc`, `intent-check`, `intent-review`, and `sprint complete`.
 
 <div class="dc-cta">
   <a class="dc-cta-primary" href="/agents/">decree for agents &amp; CI →</a>
