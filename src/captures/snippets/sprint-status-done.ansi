@@ -1,0 +1,11 @@
+
+[1;36m$ decree sprint status[0m
+✓ sprint status reported
+Sprint mode: active
+Active: SPRINT-00000000000000000000000001 Sprint 1 (1 items)
+
+Done (awaiting rollover):
+  SPEC-00000000000000000000000001 (completed)
+Backlog: 0 items
+Draft pool: 0 items
+[2m→ exit 0[0m

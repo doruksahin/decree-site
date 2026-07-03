@@ -3,7 +3,7 @@
 [progress] loaded 3 documents
 [progress] scope: all documents
 ✓ 3/6 primary items complete (50%) across 3 documents
-[progress] use --doc ID, --chain ID, --changed --base REF, or --governs PATH to narrow parallel work
+[progress] use --doc ID, --chain ID, --changed --base REF, --governs PATH, or sprint scope flags to narrow work
 Scope: all documents
 
   ADR-00000000000000000000000001   Auth via JWT         accepted  ░░░░░░░░░░   — 

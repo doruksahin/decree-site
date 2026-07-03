@@ -26,7 +26,7 @@ import { Code } from '@astrojs/starlight/components';
     <Code code="brew install doruksahin/decree/decree" lang="bash" />
   </Fragment>
   <Fragment slot="note">
-    Installs v2.0.0 from the decree Homebrew tap. Source installs are on Start here.
+    Installs v3.0.0 from the decree Homebrew tap. Source installs are on Start here.
   </Fragment>
   <Fragment slot="demo">
     <Ansi name="snippets/why-hit" title="ask which decision governs a file" />
@@ -37,7 +37,7 @@ import { Code } from '@astrojs/starlight/components';
 <div class="dc-cred">
   <span class="dc-cred-item"><span class="dc-cred-dot">●</span> <b>MIT</b> &amp; open source</span>
   <span class="dc-cred-item"><span class="dc-cred-dot">●</span> Python CLI, <b>language-agnostic</b> — governs paths, not your code</span>
-  <span class="dc-cred-item"><span class="dc-cred-dot">●</span> decree governs its own code: <b>30 decisions, 414/414</b> acceptance criteria, lint clean</span>
+  <span class="dc-cred-item"><span class="dc-cred-dot">●</span> decree governs its own code: <b>48 PRD/ADR/SPEC docs, 497/521</b> primary acceptance criteria, lint clean</span>
   <span class="dc-cred-item"><span class="dc-cred-dot">●</span> every terminal here is <b>real captured output</b></span>
 </div>
 
@@ -87,6 +87,9 @@ decree captures decisions as a chain and links each one to the code it governs:
   </CapabilityCard>
   <CapabilityCard title="the lifecycle" cmd="decree lint" href="/capabilities/lifecycle/">
     Create, validate, and track decisions: lint, status, progress, refs, graph.
+  </CapabilityCard>
+  <CapabilityCard title="sprint execution" cmd="decree sprint complete" href="/capabilities/sprints/">
+    Track active work in a parallel-safe sprint store with one file per membership.
   </CapabilityCard>
 </div>
 
@@ -163,8 +166,8 @@ This isn't a toy demo. decree manages its own decisions, and governs its own sou
 
 <Ansi name="snippets/dogfood-why" title="decree, run against the decree repo" />
 
-Its corpus is **30 decisions at 414/414 acceptance criteria, lint clean** — tracked by decree
-itself. [See the full by-example walkthrough →](/examples/)
+Its corpus is **48 PRD/ADR/SPEC docs at 497/521 primary acceptance criteria, lint clean** —
+tracked by decree itself. [See the full by-example walkthrough →](/examples/)
 
 ## Start
 

@@ -28,10 +28,10 @@ them from the real CLI (e.g. after a decree output change):
 bash scripts/capture.sh
 ```
 
-It runs the six `examples/` scenarios into `src/captures/0N-*.ansi` (used by
+It runs the six canonical governance scenarios into `src/captures/0N-*.ansi` (used by
 `/examples/`) and focused single commands into `src/captures/snippets/*.ansi` (used by
-the landing and capability pages). Captures use pinned IDs so the structural output is
-stable across runs. Override the binary or examples location:
+the landing, sprint workflow, and capability pages). Captures use pinned IDs so the
+structural output is stable across runs. Override the binary or examples location:
 
 ```bash
 DECREE=../decree/.venv/bin/decree EX_DIR=../decree/examples bash scripts/capture.sh
@@ -64,7 +64,7 @@ src/
   content/docs/
     index.mdx          landing / pitch
     start.mdx          install + the agent loop
-    examples.mdx       the six scenarios, in the before -> while -> after -> over-time arc
+    examples.mdx       six governance scenarios plus the v3 sprint execution workflow
     capabilities/      one page per capability (the 9-section spine)
   styles/              global.css (tokens, dark default) + components.css
 scripts/capture.sh     regenerates src/captures from real decree runs

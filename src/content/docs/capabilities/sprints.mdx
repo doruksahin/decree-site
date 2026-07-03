@@ -1,0 +1,98 @@
+---
+title: sprint execution — track active work without merge conflicts
+description: "Scope active work to a sprint, record item-level outcomes mid-sprint, and migrate the old single-file ledger to the v3 directory store."
+sidebar:
+  label: sprint execution
+  order: 7
+---
+
+import Ansi from '../../../components/Ansi.astro';
+import Callout from '../../../components/Callout.astro';
+import ExitBadge from '../../../components/ExitBadge.astro';
+import BeforeAfter from '../../../components/BeforeAfter.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+**`decree sprint` tracks what is actively being built without turning sprint state into
+one shared merge-conflict file.** In v3, the sprint store is a directory:
+`state.yaml` for lifecycle state, one `live/<DOC-ID>.yaml` file per membership, and one
+`closed/<SPRINT-ID>.yaml` archive per closed sprint.
+
+<BeforeAfter scenario="Two worktrees both create or finish sprint items while the sprint is active.">
+  <Fragment slot="before">
+    With a single `decree/sprints/ledger.yaml`, every worker edits the same YAML list.
+    The SPEC file and its sprint enrollment must land together, so parallel work turns
+    into a merge-conflict queue. A finished item also has to wait for full sprint
+    rollover before it can be recorded as done.
+  </Fragment>
+  <Fragment slot="after">
+    Each active item owns one `live/<DOC-ID>.yaml` file. Completing one item rewrites
+    only that item, records a snapshot, and moves it out of the open sprint scope:
+
+    <Ansi name="snippets/sprint-complete" />
+  </Fragment>
+  <Fragment slot="foot">
+    <Callout kind="value">Routine sprint work becomes a file union: different worktrees add or complete different documents by touching different paths.</Callout>
+    <Callout kind="honesty">Rollover is still an integration ceremony. v3 removes the routine ledger hotspot; it does not introduce multiple active sprints or per-worktree lanes.</Callout>
+  </Fragment>
+</BeforeAfter>
+
+## Run it
+
+<Tabs>
+  <TabItem label="open sprint">
+    The active sprint reports open work from the v2 directory store:
+
+    <Ansi name="snippets/sprint-status-open" />
+  </TabItem>
+  <TabItem label="complete item">
+    `complete` requires 100% primary acceptance criteria and records optional commit
+    evidence:
+
+    <Ansi name="snippets/sprint-complete" />
+  </TabItem>
+  <TabItem label="done awaiting rollover">
+    The resolved item leaves the default `progress` scope and appears as done until
+    rollover folds it into `closed/<SPRINT-ID>.yaml`:
+
+    <Ansi name="snippets/sprint-status-done" />
+  </TabItem>
+  <TabItem label="migrate old ledger">
+    Existing v1 projects migrate once from `ledger.yaml` to the v2 store:
+
+    <Ansi name="snippets/sprint-migrate-dry-run" />
+  </TabItem>
+</Tabs>
+
+## How it composes
+
+- **`decree progress` and `decree ddd`** default to the active sprint's open items when
+  sprint mode is enabled. Use `--corpus` for the whole repository, or `--sprint ID` to
+  include resolved active items.
+- **`decree sprint complete DOC-ID`** records a completed outcome mid-sprint after the
+  document's primary acceptance criteria reach 100%.
+- **`decree sprint drop DOC-ID --reason TEXT`** records an auditable dropped outcome.
+- **`decree sprint rollover --outcomes FILE`** closes the still-open items and folds
+  completed or dropped items into the archive.
+- **`decree migrate sprint-ledger --apply`** converts old v1 repositories and removes
+  the monolithic `ledger.yaml`.
+
+## When you'd reach for this
+
+- **Parallel agent worktrees** — each agent owns its SPEC file and its one sprint
+  membership file.
+- **Mid-sprint review** — finished work can leave the open progress scope without
+  closing the whole sprint.
+- **Release cleanup** — migrate old projects once, then let `decree lint` enforce the
+  v2 invariants.
+
+## Exit codes
+
+Sprint commands exit <ExitBadge code={0} /> when the operation is valid. Invalid state,
+such as trying to complete an item below 100% primary progress or running sprint commands
+against an unmigrated v1 ledger, exits <ExitBadge code={2} /> as a configuration/usage
+error rather than a governance finding.
+
+---
+
+Next: [the lifecycle](/capabilities/lifecycle/) for corpus validation, or
+[decree by example](/examples/) for the full governance loop.

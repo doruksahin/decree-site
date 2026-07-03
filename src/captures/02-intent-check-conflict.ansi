@@ -2,8 +2,8 @@
 [1m── The corpus: two decisions claim the same file (one shipped, one in-flight) ──[0m
 [index] rebuilding into .decree/index.sqlite
 [index] decisions=2  refs=0  governs=2  acs=2  commits=0
-[index] git_sync_ms=25
-✓ index rebuilt in 40ms
+[index] git_sync_ms=19
+✓ index rebuilt in 35ms
 
 [1m── Check the plan BEFORE coding (exit 1 = a finding you can gate CI on) ──[0m
 

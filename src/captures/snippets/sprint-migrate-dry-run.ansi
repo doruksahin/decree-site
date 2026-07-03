@@ -1,0 +1,8 @@
+
+[1;36m$ decree migrate sprint-ledger --dry-run[0m
+✓ dry-run complete; no files changed.
+migrate sprint-ledger: 0 closed sprint(s), 1 live item(s), state: active
+  create decree/sprints/state.yaml
+  create decree/sprints/live/SPEC-00000000000000000000000001.yaml
+  remove decree/sprints/ledger.yaml
+[2m→ exit 0[0m

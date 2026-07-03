@@ -344,7 +344,103 @@ EOF
   # non-deterministic, so it's described in prose on the site rather than captured.
 }
 
-# Corpus G — the REAL decree repo (dogfood): decree governs its own code.
+# Corpus G — sprint execution tracking with the v2 directory store:
+#            status -> complete one item -> status again.
+gen_sprint_v2() {
+  q make_demo_repo
+  mkdir -p decree/spec decree/sprints/live decree/sprints/closed src/auth
+  spec spec-00000000000000000000000001-token-storage.md <<'EOF'
+---
+id: SPEC-00000000000000000000000001
+status: approved
+date: 2026-07-03
+governs:
+  - src/auth/tokens.py
+---
+
+# SPEC-00000000000000000000000001 Token Storage API
+
+## Overview
+
+Tokens are stored hashed at rest.
+
+## Acceptance Criteria
+
+- [x] Hash tokens before persistence
+- [x] Revoke on logout
+EOF
+  echo "def store(token): ..." > src/auth/tokens.py
+  cat > decree/sprints/state.yaml <<'EOF'
+schema: decree.sprints.v2
+mode: enabled
+state: active
+active:
+  id: SPRINT-00000000000000000000000001
+  name: Sprint 1
+  started: '2026-07-03'
+EOF
+  cat > decree/sprints/live/SPEC-00000000000000000000000001.yaml <<'EOF'
+document: SPEC-00000000000000000000000001
+scope: active
+kind: execution
+source: manual
+added: '2026-07-03'
+EOF
+  q git add -A; q git commit -qm "init: v2 sprint corpus"
+  q "$DECREE" index rebuild
+  snip sprint-status-open.ansi sprint status
+  snip sprint-complete.ansi sprint complete SPEC-00000000000000000000000001 --commit abc1234
+  snip sprint-status-done.ansi sprint status
+}
+
+# Corpus H — a v1 sprint ledger that needs the one-shot v2 migration.
+gen_sprint_migration() {
+  q make_demo_repo
+  mkdir -p decree/spec decree/sprints src/auth
+  spec spec-00000000000000000000000001-token-storage.md <<'EOF'
+---
+id: SPEC-00000000000000000000000001
+status: approved
+date: 2026-07-03
+governs:
+  - src/auth/tokens.py
+---
+
+# SPEC-00000000000000000000000001 Token Storage API
+
+## Overview
+
+Tokens are stored hashed at rest.
+
+## Acceptance Criteria
+
+- [x] Hash tokens before persistence
+- [x] Revoke on logout
+EOF
+  echo "def store(token): ..." > src/auth/tokens.py
+  cat > decree/sprints/ledger.yaml <<'EOF'
+schema: decree.sprints.v1
+mode: enabled
+state: active
+active: SPRINT-00000000000000000000000001
+sprints:
+- id: SPRINT-00000000000000000000000001
+  name: Sprint 1
+  status: active
+  started: '2026-07-03'
+  items:
+  - document: SPEC-00000000000000000000000001
+    kind: execution
+    source: manual
+    added: '2026-07-03'
+backlog: []
+draft_pool: []
+EOF
+  q git add -A; q git commit -qm "init: v1 sprint corpus"
+  snip sprint-migrate-dry-run.ansi migrate sprint-ledger --dry-run
+}
+
+# Corpus I — the REAL decree repo (dogfood): decree governs its own code.
 # Runs against the sibling ../decree working tree, not a throwaway corpus.
 # Output is a live proof, so it tracks the real repo as it evolves. Clean
 # (no temp paths) for `why` and `progress`. Skipped if the repo isn't present.
@@ -356,12 +452,12 @@ gen_dogfood() {
     cd "$repo" || exit 0
     q "$DECREE" index rebuild   # refresh the derived cache (.decree/, gitignored)
     dc why src/decree/parser.py > "$SNIP/dogfood-why.ansi" 2>&1
-    dc progress                 > "$SNIP/dogfood-progress.ansi" 2>&1
+    dc progress --corpus        > "$SNIP/dogfood-progress.ansi" 2>&1
     dc refs SPEC-01KT22NMS0D19VMD8VPK4D2MNX > "$SNIP/dogfood-refs.ansi" 2>&1
   )
 }
 
-# Corpus H — an in-flight SPEC governs tokens.py; a change is committed with and
+# Corpus J — an in-flight SPEC governs tokens.py; a change is committed with and
 #            without the Implements: trailer  (commit-check, CI mode --diff-base)
 gen_commit_check() {
   q make_demo_repo
@@ -405,6 +501,8 @@ EOF
 ( gen_governs_gap )
 ( gen_commit_check )
 ( gen_lifecycle )
+( gen_sprint_v2 )
+( gen_sprint_migration )
 gen_dogfood
 
 echo

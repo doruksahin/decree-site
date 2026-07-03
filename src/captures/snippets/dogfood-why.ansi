@@ -1,8 +1,14 @@
 
 [1;36m$ decree why src/decree/parser.py[0m
-src/decree/parser.py — 1 governing decision
+src/decree/parser.py — 3 governing decisions
 
+  ▸ SPEC-01KW1Z8TDZ6XZDV0G44KDSB92B  implemented  2026-06-26  exact
+    Foldered Document Buckets and List CLI
+    governs: src/decree/parser.py
   ▸ SPEC-01KT22NMS0D19VMD8VPK4D2MNX  implemented  2026-06-01  exact
     Parallel-Safe Document Identity and Scoped Progress
+    governs: src/decree/parser.py
+  ▸ SPEC-01KW1QJ27R175NVM8QNGW1FX8N  draft  2026-06-26  exact
+    Sprint Ledger CLI and Validation
     governs: src/decree/parser.py
 [2m→ exit 0[0m

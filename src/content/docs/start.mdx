@@ -64,6 +64,26 @@ uv tool install git+https://github.com/doruksahin/decree
 
 </Steps>
 
+## Optional: track active sprint work
+
+Sprint mode scopes `decree progress` and `decree ddd` to the active work in the current
+timebox. In v3, sprint membership is stored as one file per document, so parallel
+worktrees can add and finish different items without fighting over one `ledger.yaml`.
+
+```bash
+decree sprint init "Sprint 1"
+decree sprint add SPEC-01KT22NMS0D19VMD8VPK4D2MNX
+decree sprint complete SPEC-01KT22NMS0D19VMD8VPK4D2MNX --commit abc1234
+decree sprint status
+```
+
+Existing projects with the old single-file sprint ledger migrate once:
+
+```bash
+decree migrate sprint-ledger --dry-run
+decree migrate sprint-ledger --apply
+```
+
 ## The loop agents and CI run
 
 decree is built to be called around every change — by a person, and by an LLM agent
@@ -92,6 +112,7 @@ editing the code:
 ## Keep going
 
 - See it run end to end: [decree by example](/examples/).
+- Track active work: [sprint execution](/capabilities/sprints/).
 - Read each capability in depth: [`why`](/capabilities/why/), [`intent-check`](/capabilities/intent-check/), [`intent-review`](/capabilities/intent-review/), [`health`](/capabilities/health/).
 - Full configuration, MCP integration, and the agent contract live in the
   [decree repository](https://github.com/doruksahin/decree).

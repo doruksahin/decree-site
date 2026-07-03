@@ -1,10 +1,10 @@
 
-[1;36m$ decree progress[0m
-[progress] loaded 32 documents
+[1;36m$ decree progress --corpus[0m
+[progress] loaded 48 documents
 [progress] scope: all documents
-✓ 425/425 primary items complete (100%) across 32 documents
-[progress] 0/88 deferred items separated from primary progress
-[progress] use --doc ID, --chain ID, --changed --base REF, or --governs PATH to narrow parallel work
+✓ 497/521 primary items complete (95%) across 48 documents
+[progress] 0/104 deferred items separated from primary progress
+[progress] use --doc ID, --chain ID, --changed --base REF, --governs PATH, or sprint scope flags to narrow work
 Scope: all documents
 
   ADR-01KT22NMRV7GMAXKWSBEEN68KE   Coupled C4 Module vs Plugin Architecture  accepted     ░░░░░░░░░░   — 
@@ -12,12 +12,22 @@ Scope: all documents
   ADR-01KT22NMRV9CP14X5982JJH161   Index-First Architecture for Decree Q...  accepted     ░░░░░░░░░░   — 
   ADR-01KT2JRPKC8ZWK48YFXXKS7ZGV   Cross-session live-conflict detection...  accepted     ░░░░░░░░░░   — 
   ADR-01KT7E7RD6NYASNDWVE0PQ7J8G   Commit-check as a CI coverage gate, n...  accepted     ░░░░░░░░░░   — 
+  ADR-01KW1QGHBT2BSZ2HVT55G1QSJB   Sprint Ledger and Carryover Semantics     superseded   ░░░░░░░░░░   — 
+  ADR-01KW1Z7GGGQMRNN9W1KCDRD70T   Physical Folder Buckets for Document ...  proposed     ░░░░░░░░░░   — 
+  ADR-01KW22K6H6FFWJFTPHNXHA1GSD   Self-contained HTML Board Export          proposed     ░░░░░░░░░░   — 
+  ADR-01KW2BEB2KK28J2G4QAQT81737   Packaged Project Local Agent Skills I...  accepted     ░░░░░░░░░░   — 
+  ADR-01KWKXH8423XTBV6CDVXB4B2ZB   Directory-Decomposed Sprint Ledger        accepted     ░░░░░░░░░░   — 
   PRD-01KT22NMRR0BX7KBF0F0N5ER6Z   DDD CLI Command and Proofshot Integra...  implemented  ██████████ 100% (17/17 primary)
   PRD-01KT22NMRR63TXR7NX5XYRG5FK   C4 Architecture Support                   implemented  ░░░░░░░░░░   — 
   PRD-01KT22NMRS4QGHSFDBZ858PP1T   Queryable Decision Provenance Graph       implemented  ░░░░░░░░░░   — 
   PRD-01KT22NMRSXYT95XE808VD8EV4   State-of-the-Art Decision Reasoning       implemented  ░░░░░░░░░░   — 
   PRD-01KT22NMRTAF9581AXC53EHQTW   Real-Corpus Validation Against jira-t...  approved     ░░░░░░░░░░   — 
   PRD-01KT22NMRTFTWFFARAN0PVEETA   Parallel-Safe Document Identity and S...  implemented  ░░░░░░░░░░   — 
+  PRD-01KW1QEZEC1R1BSTZN1SSPPCEJ   Sprint-Scoped Execution Tracking          draft        ░░░░░░░░░░   0% (0/10 primary)
+  PRD-01KW1Z5ZYPQGB8E35RWP3CA9R3   Foldered Document Buckets                 draft        ░░░░░░░░░░   — 
+  PRD-01KW22JY2RQJD7B759ET0BM2NP   HTML Board Export and Required Buckets    draft        ░░░░░░░░░░   — 
+  PRD-01KW2BDXBB3Y6KAW081GPQTVG8   Agent Skill Install DevX                  approved     ░░░░░░░░░░   — 
+  PRD-01KWKXH2EX1WH7XWXCNKSMRW24   Parallel-Safe Sprint Execution            draft        ░░░░░░░░░░   0% (0/7 primary)
   SPEC-01KT22NMRW79Y92MKZT807B2J1  DDD CLI, Completion Report, and Stop ...  implemented  ██████████ 100% (31/31 primary); deferred 0/6
   SPEC-01KT22NMRWENYKC3MGRA50M7GE  C4 Validation and Diagram Generation      implemented  ██████████ 100% (32/32 primary); deferred 0/5
   SPEC-01KT22NMRX176PCT00SKJ9G2AQ  SQLite Provenance Index — Schema and ...  implemented  ██████████ 100% (25/25 primary); deferred 0/7
@@ -39,5 +49,11 @@ Scope: all documents
   SPEC-01KT6NCQC7DMJ3NG1MPWBGBVFQ  Missing governance suggestions from o...  implemented  ██████████ 100% (12/12 primary); deferred 0/6
   SPEC-01KT6TCFMWAV6N8G5DR5QMX1P5  Point-of-change governs-gap suggestio...  implemented  ██████████ 100% (11/11 primary); deferred 0/4
   SPEC-01KT7E7SQ7QVXZYK2Q0Y37QD3J  Trailer-coverage gate via decree comm...  implemented  ██████████ 100% (11/11 primary)
+  SPEC-01KW1QJ27R175NVM8QNGW1FX8N  Sprint Ledger CLI and Validation          draft        ███████░░░  74% (20/27 primary); deferred 0/4
+  SPEC-01KW1Z8TDZ6XZDV0G44KDSB92B  Foldered Document Buckets and List CLI    implemented  ██████████ 100% (12/12 primary); deferred 0/4
+  SPEC-01KW22KE3K4J7M2RJYAC110MPH  Required Buckets and Generate HTML Board  draft        ██████████ 100% (9/9 primary); deferred 0/2
+  SPEC-01KW25D3W2KH097XXDP4EVE1X4  HTML Board Markdown Overlay               draft        ██████████ 100% (10/10 primary)
+  SPEC-01KW2BEQ5J7JWM93K4YAS9GZAB  Agent Skill Install CLI                   approved     ██████████ 100% (12/12 primary)
+  SPEC-01KWKXHERB56W94SCRZEVMBQMJ  Sprint Ledger v2 Storage and Item-Lev...  implemented  ██████████ 100% (9/9 primary); deferred 0/6
 
 [2m→ exit 0[0m
