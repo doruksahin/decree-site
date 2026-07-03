@@ -106,7 +106,8 @@ snapshot, pick one open sprint item, and hand that document ID to a worker agent
 agent does not need the HTML; it starts from `decree ddd --doc DOC-ID`, runs
 `intent-check` before editing, and records its own `sprint complete` outcome when the
 acceptance criteria are done. A second worker can do the same from another worktree on a
-different `DOC-ID`.
+different `DOC-ID`. If the item was waiting in backlog or draft pool, the orchestrator
+promotes it first with `decree sprint move DOC-ID --to active`.
 
 <Tabs>
   <TabItem label="open sprint">

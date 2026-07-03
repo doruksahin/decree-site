@@ -88,7 +88,7 @@ decree captures decisions as a chain and links each one to the code it governs:
   <CapabilityCard title="the lifecycle" cmd="decree lint" href="/capabilities/lifecycle/">
     Create, validate, and track decisions: lint, status, progress, refs, graph.
   </CapabilityCard>
-  <CapabilityCard title="sprint execution" cmd="decree sprint complete" href="/capabilities/sprints/">
+  <CapabilityCard title="sprint execution" cmd="decree sprint move" href="/capabilities/sprints/">
     Dispatch worker agents from a sprint item without a shared ledger conflict.
   </CapabilityCard>
 </div>
@@ -119,7 +119,7 @@ the loop. The same checks are exposed over MCP (`decree mcp serve`: eight tools,
 JSON to the CLI) and project-local Codex/Claude skills installed by `decree init --with-agents`.
 For parallel work, a human orchestrator can refresh the read-only HTML board to inspect
 the sprint, then hand each worker agent one document ID. The agents stay on CLI/MCP:
-`decree ddd --doc`, `intent-check`, `intent-review`, and `sprint complete`.
+`sprint move`, `decree ddd --doc`, `intent-check`, `intent-review`, and `sprint complete`.
 
 <div class="dc-cta">
   <a class="dc-cta-primary" href="/agents/">decree for agents &amp; CI →</a>

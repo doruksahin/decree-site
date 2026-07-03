@@ -48,10 +48,12 @@ sprint looks like this:
 
    ```bash
    decree generate-html --output decree-board.html
+   decree sprint move SPEC-01KT22NMS0D19VMD8VPK4D2MNX --to active
    ```
 
    Open the file locally, choose an open sprint item, and assign that document ID to an
-   agent. The board is an inspection surface: it does not mutate sprint state.
+   agent. The board is an inspection surface: it does not mutate sprint state. Use
+   `sprint move` when a backlog or draft-pool item becomes current-sprint work.
 
 2. **Let the first worker scope itself to one item.**
 
@@ -122,6 +124,8 @@ sprint looks like this:
 - **`decree sprint complete DOC-ID`** records a completed outcome mid-sprint after the
   document's primary acceptance criteria reach 100%.
 - **`decree sprint drop DOC-ID --reason TEXT`** records an auditable dropped outcome.
+- **`decree sprint move DOC-ID --to active|backlog|draft-pool`** promotes backlog or
+  draft-pool work into the active sprint, or moves an open active item out with a reason.
 - **`decree sprint rollover --outcomes FILE`** closes the still-open items and folds
   completed or dropped items into the archive.
 - **`decree migrate sprint-ledger --apply`** converts old v1 repositories and removes

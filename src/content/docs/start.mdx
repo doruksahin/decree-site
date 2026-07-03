@@ -73,6 +73,7 @@ worktrees can add and finish different items without fighting over one `ledger.y
 ```bash
 decree sprint init "Sprint 1"
 decree sprint add SPEC-01KT22NMS0D19VMD8VPK4D2MNX
+decree sprint move SPEC-01KT22NMS0D19VMD8VPK4D2MNX --to active
 decree generate-html --output decree-board.html
 decree sprint complete SPEC-01KT22NMS0D19VMD8VPK4D2MNX --commit abc1234
 decree sprint status
@@ -81,7 +82,8 @@ decree sprint status
 Use the generated HTML as a read-only human board: the orchestrator can open it to see
 open work, done items awaiting rollover, buckets, and acceptance-criteria progress. Agent
 workers do not need the board; hand each one a document ID and let it run the CLI/MCP loop
-against that scoped item.
+against that scoped item. When backlog or draft-pool work becomes current-sprint work,
+promote it with `decree sprint move DOC-ID --to active`.
 
 Existing projects with the old single-file sprint ledger migrate once:
 
