@@ -4,6 +4,15 @@
 Intent check — pre-PR governance map
   Plan: Edit token storage
 
+Block now (1):
+  ✗ isolate_session: src/auth/tokens.py is also planned by active session(s) session-b. Run in a dedicated worktree, or split this file out of one plan, before starting.
+
+Clean later (0):
+  (none)
+
+Recommended next command:
+  Run in a dedicated worktree, or split the overlapping file out of one plan, before starting.
+
 Planned files (1):
   • src/auth/tokens.py
 

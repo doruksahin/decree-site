@@ -42,15 +42,32 @@ decisions that govern those files, which of them are stale, which acceptance cri
 still unchecked, and any structural conflicts — two decisions claiming the same path.
 All of it lands before a diff exists, so you adjust the plan instead of unwinding code.
 
+Every finding carries a **class**, so an agent can act without guessing:
+`blocking_findings` (a real collision), `advisory_findings` (surfaced — proceed and note
+them), and `corpus_hygiene_findings` (you're editing a decree document itself). Planned
+files are split into **source**, **corpus**, and **generated** — so refining a SPEC's own
+design is never mistaken for ungoverned code. The human report leads with a **Block now /
+Clean later** summary and one recommended next command. The classes are additive and the
+exit code is unchanged: they inform the decision, they don't gate it.
+
 {/* ── 6. Run it ───────────────────────────────────────────────────────────── */}
 ## Run it
 
 <Tabs>
   <TabItem label="conflict check">
     Two decisions declare `src/auth/tokens.py`. The in-flight one has unchecked acceptance
-    criteria. intent-check surfaces the conflict and the recommended actions.
+    criteria. intent-check leads with **Block now** (the conflict) and **Clean later** (the
+    unchecked criteria), then one recommended next command.
 
     <Ansi name="snippets/intent-check-conflict" />
+  </TabItem>
+  <TabItem label="editing a decree doc">
+    The plan touches a SPEC's own markdown and a new helper. Neither is a blocker: the
+    self-edit is **corpus maintenance**, the new file an advisory `add_governance`. Both
+    land under **Clean later** and the check exits <ExitBadge code={0} /> — editing a
+    decision document is no longer mistaken for ungoverned code.
+
+    <Ansi name="snippets/intent-check-typed" />
   </TabItem>
   <TabItem label="live-session overlap">
     `--other-active-files` takes a JSON map of other session ids to the paths they plan to
@@ -65,6 +82,34 @@ decree owns **no** session state. You supply the other sessions' planned paths; 
 only computes the overlap. It reports *that* two sessions claim the file — not who should
 win.
 
+## Work under your active decision
+
+A hot file often belongs to more than one decision over time — a first slice, an evolution,
+a shared contract. Reported flat, that reads as a conflict every time. Pass
+`--under SPEC-…` and intent-check frames the report around the decision you're working under:
+
+<Ansi name="snippets/intent-check-under" />
+
+The `--json` output makes the frame explicit — what your decision **owns**, which other
+governors are **contextual**, and any path it does **not** own (a real contradiction):
+
+```json
+{
+  "under_decision": "SPEC-…01",
+  "owned_files": ["src/auth/tokens.py"],
+  "contextual_overlaps": [
+    { "path": "src/auth/tokens.py", "contextual_decision_ids": ["SPEC-…02"] }
+  ],
+  "contradictions": []
+}
+```
+
+<Callout kind="value">"Work under SPEC-…01; treat SPEC-…02 as context" is a call an agent can make deterministically — instead of stopping on every hot file three decisions happen to share.</Callout>
+
+A separate advisory, `directory_overlaps`, surfaces co-governance the exact-path conflict
+query can't see: a file owned by one decision exactly and another via a directory
+`governs:` entry. It's advisory — it never flips the exit code.
+
 {/* ── 7. When you'd reach for this ────────────────────────────────────────── */}
 ## When you'd reach for this
 
@@ -75,9 +120,12 @@ win.
 {/* ── 8. Reference (kept separate from the explanation above) ──────────────── */}
 ## Flags & exit codes
 
-intent-check exits <ExitBadge code={1} /> on findings — structural conflicts, live-session
-overlaps, or stale governance — <ExitBadge code={0} /> when the plan is clean, and
-<ExitBadge code={2} /> on a config error, such as an invalid `--under` id.
+intent-check exits <ExitBadge code={1} /> on a blocking finding — structural conflicts,
+live-session overlaps, or stale governance — <ExitBadge code={0} /> when the plan is clean
+or has only advisory / corpus-hygiene findings, and <ExitBadge code={2} /> on a config
+error, such as an invalid `--under` id. The `blocking_findings` / `advisory_findings` /
+`corpus_hygiene_findings` classes and the `--under` framing keys are additive: they never
+change the exit code.
 
 <details>
 <summary>All flags</summary>
@@ -87,7 +135,7 @@ overlaps, or stale governance — <ExitBadge code={0} /> when the plan is clean,
 | `--plan TEXT` | One-sentence to one-paragraph description of the planned change. |
 | `--files PATH [PATH ...]` | One or more repo-relative paths the plan will touch. |
 | `--other-active-files JSON` | JSON map of other active session ids to the paths they plan to touch, e.g. `'{"session-b": ["src/foo.py"]}'`. Planned files overlapping a live session surface as live-session conflicts. |
-| `--under ID` | Active decision id. When a planned file is one this decision's own commits repeat-touch (≥2) but it does not declare, surface an advisory `governs:` gap. Invalid id exits `2`. |
+| `--under ID` | Active decision id. Frames the report around it — `owned_files`, `contextual_overlaps`, `contradictions` — and surfaces the advisory `governs_gaps` its own commits repeat-touch (≥2) but it doesn't declare. Invalid id exits `2`. |
 | `--json` | Emit JSON for programmatic consumers. |
 | `--project PATH` | Operate on the project at this path (default: cwd). |
 | `--with-abstention` | Route governance lookups through the calibrated method. |

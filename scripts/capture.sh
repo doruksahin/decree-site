@@ -123,6 +123,11 @@ EOF
   q "$DECREE" index rebuild
   snip intent-check-conflict.ansi \
     intent-check --plan "Change token refresh storage" --files src/auth/tokens.py
+  # Same collision, framed around the active decision: --under SPEC-…001 marks
+  # tokens.py as owned and SPEC-…002 as a contextual overlap, not a blocker.
+  snip intent-check-under.ansi \
+    intent-check --plan "Change token refresh storage" --files src/auth/tokens.py \
+    --under SPEC-00000000000000000000000001
   echo "def store(token): rotate()  # the change" > src/auth/tokens.py
   git diff > change.diff 2>/dev/null
   snip intent-review-conflict.ansi intent-review --diff change.diff
@@ -493,11 +498,80 @@ EOF
   snip commit-check-pass.ansi commit-check --diff-base HEAD~1 --strict
 }
 
+# Corpus K — one SPEC governs tokens.py; the plan edits the SPEC's own markdown
+#            (a decree-document self-edit) and a new ungoverned helper. Neither
+#            is a blocker: the self-edit is corpus maintenance, the new file an
+#            advisory add_governance. Shows the typed "Block now / Clean later"
+#            output and the source/corpus classification. Exit 0.
+gen_typed() {
+  q make_demo_repo
+  spec spec-00000000000000000000000001-token-storage.md <<'EOF'
+---
+id: SPEC-00000000000000000000000001
+status: implemented
+date: 2026-05-10
+governs:
+  - src/auth/tokens.py
+---
+
+# SPEC-00000000000000000000000001 Token storage
+
+## Overview
+
+Tokens are stored hashed at rest.
+EOF
+  echo "def store(token): ..." > src/auth/tokens.py
+  q git add -A; q git commit -qm "init: auth"
+  q "$DECREE" index rebuild
+  snip intent-check-typed.ansi \
+    intent-check --plan "Refine the SPEC and add a helper" \
+    --files decree/spec/spec-00000000000000000000000001-token-storage.md src/auth/helper.py
+}
+
+# Corpus L — a SPEC at 100% primary ACs but still draft, with a trailer-linked
+#            commit (lifecycle drift), governing a broad module surface (broad
+#            governance). Both signals are advisory — health still exits 0.
+gen_quality() {
+  q make_demo_repo
+  mkdir -p decree/spec src
+  {
+    echo "---"
+    echo "id: SPEC-00000000000000000000000001"
+    echo "status: draft"
+    echo "date: 2026-05-10"
+    echo "governs:"
+    for i in $(seq 1 26); do
+      printf 'v0\n' > "src/mod$i.py"
+      echo "  - src/mod$i.py"
+    done
+    echo "---"
+    echo ""
+    echo "# SPEC-00000000000000000000000001 Broad module surface"
+    echo ""
+    echo "## Overview"
+    echo ""
+    echo "One SPEC that grew to own many modules."
+    echo ""
+    echo "## Acceptance Criteria"
+    echo ""
+    echo "- [x] Ships"
+    echo "- [x] Tested"
+  } > decree/spec/spec-00000000000000000000000001-broad.md
+  q git add -A
+  q git commit -qm "init: broad module surface
+
+Implements: SPEC-00000000000000000000000001"
+  q "$DECREE" index rebuild
+  snip health-quality.ansi health
+}
+
 # Each in a subshell so make_demo_repo's cd + cleanup trap stay isolated.
 ( gen_why )
 ( gen_conflict )
 ( gen_isolate )
+( gen_typed )
 ( gen_health )
+( gen_quality )
 ( gen_governs_gap )
 ( gen_commit_check )
 ( gen_lifecycle )

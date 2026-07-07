@@ -1,19 +1,20 @@
 
-[1;36m$ decree intent-check --plan edit auth helper --files src/auth/helper.py --under SPEC-00000000000000000000000001[0m
+[1;36m$ decree intent-check --plan Refine the SPEC and add a helper --files decree/spec/spec-00000000000000000000000001-token-storage.md src/auth/helper.py[0m
 Intent check — pre-PR governance map
-  Plan: edit auth helper
+  Plan: Refine the SPEC and add a helper
 
 Block now (0):
   (none)
 
 Clean later (2):
   ~ add_governance: src/auth/helper.py has no governing decision. Consider writing a SPEC or amending an existing one's `governs:` list before starting.
-  ~ declare_governs [SPEC-00000000000000000000000001]: SPEC-00000000000000000000000001's commits repeat-touch src/auth/helper.py, which is not in its `governs:`. Consider declaring it (advisory).
+  ~ corpus_maintenance [decree/spec/spec-00000000000000000000000001-token-storage.md]: decree/spec/spec-00000000000000000000000001-token-storage.md is a decree document; run `decree lint` (and `decree index rebuild` after governs:/frontmatter edits) — no governance needed.
 
 Recommended next command:
   Proceed; address the advisory / corpus-hygiene items when convenient.
 
-Planned files (1):
+Planned files (2):
+  • decree/spec/spec-00000000000000000000000001-token-storage.md
   • src/auth/helper.py
 
 Governing decisions (0):
@@ -31,7 +32,6 @@ Conflicts (0):
 Live-session conflicts (0):
   (none)
 
-Recommended actions (2):
+Recommended actions (1):
   → add_governance: src/auth/helper.py has no governing decision. Consider writing a SPEC or amending an existing one's `governs:` list before starting.
-  → declare_governs [SPEC-00000000000000000000000001]: SPEC-00000000000000000000000001's commits repeat-touch src/auth/helper.py, which is not in its `governs:`. Consider declaring it (advisory).
 [2m→ exit 0[0m

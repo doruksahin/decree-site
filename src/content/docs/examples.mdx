@@ -15,9 +15,13 @@ output. Nothing below is mocked; every block is captured from an actual run.
 Each scenario ends on its own `VALUE:` line (what you gain) and `HONESTY:` line (where
 decree refuses to overclaim). The exit code is the contract:
 
-- <ExitBadge code={1} /> — a finding you can gate CI on: a conflict, a live overlap, dead governance.
-- <ExitBadge code={0} /> — clean, or advisory-only. Suggestions never block.
+- <ExitBadge code={1} /> — a **blocking** finding you can gate CI on: a conflict, a live overlap, dead governance.
+- <ExitBadge code={0} /> — clean, or **advisory / corpus-hygiene** only. Suggestions, editing a decree doc, and the governance-quality signals never block.
 - <ExitBadge code={2} /> — a config error, kept apart from findings on purpose.
+
+`intent-check` types every finding (`blocking_findings` / `advisory_findings` /
+`corpus_hygiene_findings`) and leads its human output with a **Block now / Clean later**
+split, so the exit code is a summary and the JSON is the detail.
 
 You can run the whole arc yourself:
 
@@ -40,7 +44,8 @@ file nothing governs. <ExitBadge code={0} />
 ### 2 · Will my plan collide with a decision?
 
 Two decisions claim the same file, and the in-flight one has open acceptance criteria.
-decree surfaces it at planning time, not in code review. <ExitBadge code={1} />
+decree surfaces it at planning time, not in code review — the conflict under **Block now**,
+the unchecked criteria under **Clean later**. <ExitBadge code={1} />
 
 <Ansi name="02-intent-check-conflict" />
 
@@ -89,6 +94,38 @@ touching but never declared. decree nudges you to declare it — advisory, never
 <ExitBadge code={0} />
 
 <Ansi name="06-governs-gap" />
+
+---
+
+## Typed findings & governance quality
+
+The same commands, read with sharper eyes. `intent-check` now classes every finding and
+frames a multi-decision file around the decision you're working under, and `health` adds
+two advisory signals for governance *quality*. None of these change an exit code.
+
+<Tabs>
+  <TabItem label="editing a decree doc">
+    The plan edits a SPEC's own markdown and a new helper. Neither blocks: the self-edit is
+    **corpus maintenance**, the new file an advisory `add_governance`. Both land under
+    **Clean later**, and the check exits <ExitBadge code={0} />. <ExitBadge code={0} />
+
+    <Ansi name="snippets/intent-check-typed" />
+  </TabItem>
+  <TabItem label="under a decision">
+    Two decisions claim `src/auth/tokens.py`. `--under SPEC-…01` marks it as **owned** and
+    SPEC-…02 as a **contextual** overlap — the recommended next command says work under
+    your decision and treat the other as context, not a wall. <ExitBadge code={1} />
+
+    <Ansi name="snippets/intent-check-under" />
+  </TabItem>
+  <TabItem label="governance quality">
+    A SPEC at 100% acceptance criteria with a commit attached, still marked draft, and a
+    `governs:` list grown to 26 paths. `lifecycle_drift` and `broad_governance` name both —
+    advisory, so the four coherence signals stay clean and health exits <ExitBadge code={0} />. <ExitBadge code={0} />
+
+    <Ansi name="snippets/health-quality" />
+  </TabItem>
+</Tabs>
 
 ---
 

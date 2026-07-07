@@ -1,13 +1,5 @@
 
-[1m── The corpus: two decisions claim the same file (one shipped, one in-flight) ──[0m
-[index] rebuilding into .decree/index.sqlite
-[index] decisions=2  refs=0  governs=2  acs=2  commits=0
-[index] git_sync_ms=21
-✓ index rebuilt in 39ms
-
-[1m── Check the plan BEFORE coding (exit 1 = a finding you can gate CI on) ──[0m
-
-[1;36m$ decree intent-check --plan Change token refresh storage --files src/auth/tokens.py[0m
+[1;36m$ decree intent-check --plan Change token refresh storage --files src/auth/tokens.py --under SPEC-00000000000000000000000001[0m
 [intent-check] exit 1: findings present (conflicts, live-session overlaps, or stale governance).
 Intent check — pre-PR governance map
   Plan: Change token refresh storage
@@ -51,5 +43,3 @@ Recommended actions (4):
   → check_ac [SPEC-00000000000000000000000002]: SPEC-00000000000000000000000002 has an unchecked AC under 'Acceptance Criteria': Old tokens revoked on rotation
   → resolve_conflict_first: src/auth/tokens.py is governed by SPEC-00000000000000000000000001, SPEC-00000000000000000000000002. Decide which decision is authoritative before implementing.
 [2m→ exit 1[0m
-[1;32mVALUE:[0m   Discover a two-decision collision in code review (late) → see it at planning time: the conflict, the in-flight SPEC, its unchecked acceptance criteria, and a non-zero exit.
-[1;33mHONESTY:[0m intent-check reports the STRUCTURAL conflict (two decisions declare the path). It does NOT judge whether they truly contradict — that semantic call is the agent's/reviewer's job.

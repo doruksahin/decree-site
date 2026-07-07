@@ -2,8 +2,8 @@
 [1m── The corpus: a SPEC governing two files, with real trailer-linked history ──[0m
 [index] rebuilding into .decree/index.sqlite
 [index] decisions=1  refs=0  governs=2  acs=0  commits=2
-[index] git_sync_ms=50
-✓ index rebuilt in 62ms
+[index] git_sync_ms=49
+✓ index rebuilt in 68ms
 
 [1m── Health: declared scope no commit touched (a finding, exit 1) + scope the code grew into (advisory) ──[0m
 
@@ -22,7 +22,10 @@ Suggested governance (advisory — ungoverned files with a proposed owner; does 
   SPEC-00000000000000000000000001   from 2 linked commit(s) touching 2 path(s):
     src/auth/helper.py  (touched in 2 commits)
 
-  observed as of 2026-07-03T14:06:34+00:00; 0 decision(s) have no trailer-linked commits (governance unobservable).
+  observed as of 2026-07-07T13:16:58+00:00; 0 decision(s) have no trailer-linked commits (governance unobservable).
+
+Lifecycle drift (1) — advisory:
+  ~ SPEC-00000000000000000000000001 [terminal_but_governance_dead]: SPEC-00000000000000000000000001 is implemented (terminal) but its declared governance is dead (unobserved in commits).
 
 Thresholds: --threshold-commits=10 --threshold-days=30
 [2m→ exit 1[0m

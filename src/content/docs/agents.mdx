@@ -41,14 +41,17 @@ Run this in an agent session or a CI job. Every step is a real command.
    ```
 
 3. **Read the drift before you plan.** Stale decisions, ungoverned hotspots, dead
-   governance, and advisory suggestions — surfaced once, up front.
+   governance, and advisory suggestions — plus governance-quality signals: `lifecycle_drift`
+   (a decision at 100% acceptance criteria still marked draft, or a shipped decision whose
+   governance rotted) and `broad_governance` (a `governs:` surface that grew too wide).
 
    ```bash
    decree health --json
    ```
 
    Dead governance is a finding and exits <ExitBadge code={1} />. Resolve it before it
-   compounds. Suggested governance is advisory and exits <ExitBadge code={0} />.
+   compounds. Suggested governance, `lifecycle_drift`, and `broad_governance` are advisory
+   and exit <ExitBadge code={0} />.
 
 4. **Check intent before you write a line.** State the plan and the files. decree returns
    the governing decisions and any structural conflict.
@@ -58,7 +61,8 @@ Run this in an agent session or a CI job. Every step is a real command.
    ```
 
    Working alongside other live sessions? Pass their planned paths to get `live_conflicts`.
-   In a governed session, pass `--under` to get `governs_gaps` — files the decision
+   In a governed session, pass `--under` to frame the report around your active decision —
+   `owned_files`, `contextual_overlaps`, `contradictions`, and the `governs_gaps` it
    repeat-touches but doesn't declare.
 
    ```bash
@@ -67,10 +71,21 @@ Run this in an agent session or a CI job. Every step is a real command.
      --under SPEC-01KT22NMS0D19VMD8VPK4D2MNX --json
    ```
 
-5. **Resolve the recommended action before implementing.** If the report says
-   `draft_adr_first`, `update_spec_first`, `resolve_conflict_first`, or `isolate_session`,
-   do that first. For `isolate_session`, run in a dedicated worktree or split the
-   overlapping file out of one plan.
+5. **Interpret the findings by severity — don't blindly resolve everything.** decree
+   classes each finding so the agent can act without guessing: `blocking_findings` (a real
+   collision — `resolve_conflict_first`, a stale owner's `update_decision`, or a live
+   `isolate_session`), `advisory_findings` (`update_spec_first`, `add_governance`,
+   `check_ac` — proceed and note them), and `corpus_hygiene_findings` (you're editing a
+   decree document itself — run `lint`, not `add_governance`). Resolve blockers; proceed
+   past advisory and corpus findings, stating why. The human output leads with a **Block
+   now / Clean later** split for exactly this. For `isolate_session`, run in a dedicated
+   worktree or split the overlapping file out of one plan.
+
+   Pass `--under` to frame a multi-decision hot file around your active decision:
+   `owned_files` is what it governs, `contextual_overlaps` are the other governors to
+   treat as context unless their acceptance criteria contradict your plan, and
+   `contradictions` are the paths it does not own. The classes are additive — the exit
+   code is unchanged, so *you* decide, not the exit alone.
 
 6. **Review intent after the code exists.** Same governance corpus, now against the diff.
 
@@ -90,10 +105,14 @@ Run this in an agent session or a CI job. Every step is a real command.
 
 </Steps>
 
-The gate is the exit code. `intent-check` and `intent-review` are queries and exit
-<ExitBadge code={0} /> whether or not they find a conflict — your CI job decides what to
-do with the JSON. `lint` and dead governance exit <ExitBadge code={1} />, which is what
-you fail a build on. A broken `decree.toml` exits <ExitBadge code={2} />.
+The gate is the exit code. `intent-check` and `intent-review` exit <ExitBadge code={1} />
+on a blocking finding — a conflict, stale governance, or a live overlap — and
+<ExitBadge code={0} /> on a clean plan or advisory-only findings. The typed
+`blocking_findings` / `advisory_findings` / `corpus_hygiene_findings` buckets tell you
+*which* kind, so the agent (or CI job) reads the JSON and decides whether to stop or
+proceed rather than treating every non-zero exit as a wall. `lint` and dead governance
+exit <ExitBadge code={1} />, which is what you fail a build on. A broken `decree.toml`
+exits <ExitBadge code={2} />.
 
 ## Human orchestrator, worker agents
 
@@ -173,10 +192,10 @@ MCP tools and the CLI never diverge.
     Decisions whose referenced files have moved past them.
   </Card>
   <Card title="health" icon="approve-check">
-    Four signals — stale decisions, ungoverned hotspots, dead governance (a finding, exit 1), suggested governance (advisory, exit 0, never feeds `why`).
+    Stale decisions, ungoverned hotspots, dead governance (a finding, exit 1), suggested governance, plus advisory `lifecycle_drift` and `broad_governance` — all advisory signals exit 0 and never feed `why`.
   </Card>
   <Card title="intent_check" icon="rocket">
-    Pre-code. Accepts `other_active_files` (`{session_id: [paths]}`) → `live_conflicts`, and `under` → `governs_gaps`.
+    Pre-code. Findings typed as `blocking_findings` / `advisory_findings` / `corpus_hygiene_findings`; planned files split into source / corpus / generated. Accepts `other_active_files` → `live_conflicts` and `under` → `owned_files` / `contextual_overlaps` / `contradictions`.
   </Card>
   <Card title="intent_review" icon="seti:diff">
     Post-code diff against the same corpus. Also accepts `under` for `governs_gaps`.

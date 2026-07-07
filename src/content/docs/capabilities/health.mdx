@@ -38,13 +38,21 @@ which half is a finding and which half is only a hint.
 {/* ── 5. The concept ──────────────────────────────────────────────────────── */}
 ## How it works
 
-`health` surfaces four signals from the SQLite index and git history. **Stale decisions**
-(declared paths churned while the decision sat still) and **ungoverned hotspots**
-(high-churn files no decision owns) key off git churn. **Dead governance** (declared
-`governs:` paths no trailer-linked commit ever touched) and **suggested governance** (files
-a decision's own commits repeat-touch but never declare) additionally rest on the
-`Implements:/Refs:/Fixes:` trailer convention — deterministic to compute, not certain. All
-four are read-only and never feed `why()`.
+`health` surfaces four coherence signals from the SQLite index and git history. **Stale
+decisions** (declared paths churned while the decision sat still) and **ungoverned
+hotspots** (high-churn files no decision owns) key off git churn. **Dead governance**
+(declared `governs:` paths no trailer-linked commit ever touched) and **suggested
+governance** (files a decision's own commits repeat-touch but never declare) additionally
+rest on the `Implements:/Refs:/Fixes:` trailer convention — deterministic to compute, not
+certain. All four are read-only and never feed `why()`.
+
+Two further signals report governance *quality* rather than coherence, and both are
+**advisory** — they never change the exit code. **Lifecycle drift** flags a decision at
+100% acceptance criteria with commits attached but still marked draft (status stopped
+signalling maturity), or a shipped decision whose governance has since gone stale or dead.
+**Broad governance** flags a `governs:` surface that grew too wide — the counts, the
+exact-vs-directory split, the governs-to-commits ratio, and how many paths another decision
+also governs — the drift from "files owned" toward "files touched".
 
 {/* ── 6. Run it ───────────────────────────────────────────────────────────── */}
 ## Run it
@@ -55,7 +63,19 @@ Read the split in the output. **Dead governance** lists `src/auth/legacy_sso.py`
 declared path the SPEC's two linked commits never touched, so it counts as a finding.
 **Suggested governance** lists `src/auth/helper.py` — a file those same commits keep
 editing but the SPEC doesn't claim, surfaced as advisory and marked "does not affect
-exit status."
+exit status." The same implemented SPEC also appears once more under **Lifecycle drift** —
+shipped, yet its declared governance is dead — an advisory nudge, covered next.
+
+### Governance quality
+
+Beyond coherence, `health` flags where a decision's *lifecycle* or *scope* has drifted.
+Here a SPEC has every primary acceptance criterion checked and a commit attached, yet is
+still marked `draft`, and its `governs:` list has grown to 26 paths. Both surface as
+advisory — the four coherence signals are clean, so `health` exits <ExitBadge code={0} />.
+
+<Ansi name="snippets/health-quality" />
+
+<Callout kind="value">A "100% complete but still draft" SPEC is exactly the drift that makes an agent distrust status. health names it — without ever failing your build on it.</Callout>
 
 {/* ── 7. When you'd reach for this ────────────────────────────────────────── */}
 ## When you'd reach for this
@@ -68,8 +88,9 @@ exit status."
 ## Flags & exit codes
 
 `health` exits <ExitBadge code={1} /> when stale, ungoverned-hotspot, or dead-governance
-findings exist. Suggested governance is advisory: it is an <ExitBadge code={0} />
-contribution and never affects the exit. A config error exits <ExitBadge code={2} />.
+findings exist. Suggested governance, lifecycle drift, and broad governance are advisory:
+they are <ExitBadge code={0} /> contributions and never affect the exit. A config error
+exits <ExitBadge code={2} />.
 
 <details>
 <summary>All flags</summary>

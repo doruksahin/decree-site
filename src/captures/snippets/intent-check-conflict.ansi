@@ -4,6 +4,17 @@
 Intent check — pre-PR governance map
   Plan: Change token refresh storage
 
+Block now (1):
+  ✗ resolve_conflict_first: src/auth/tokens.py is governed by SPEC-00000000000000000000000001, SPEC-00000000000000000000000002. Decide which decision is authoritative before implementing.
+
+Clean later (3):
+  ~ update_spec_first [SPEC-00000000000000000000000002]: SPEC-00000000000000000000000002 (Token rotation policy) governs planned files and has unchecked acceptance criteria. Check off or amend ACs before implementing on top.
+  ~ check_ac [SPEC-00000000000000000000000002]: SPEC-00000000000000000000000002 has an unchecked AC under 'Acceptance Criteria': Rotation job runs on schedule
+  ~ check_ac [SPEC-00000000000000000000000002]: SPEC-00000000000000000000000002 has an unchecked AC under 'Acceptance Criteria': Old tokens revoked on rotation
+
+Recommended next command:
+  decree intent-check --under SPEC-00000000000000000000000001 --plan "..." --files ...  (name the authoritative decision; treat the other governors as contextual)
+
 Planned files (1):
   • src/auth/tokens.py
 
