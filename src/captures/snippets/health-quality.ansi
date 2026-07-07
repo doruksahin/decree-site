@@ -9,7 +9,7 @@ Dead governance: none (every declared path with a commit basis was touched).
 
 Suggested governance: none (no repeat-touched undeclared paths).
 
-  observed as of 2026-07-07T13:17:07+00:00; 0 decision(s) have no trailer-linked commits (governance unobservable).
+  observed as of 2026-07-07T17:47:34+00:00; 0 decision(s) have no trailer-linked commits (governance unobservable).
 
 Lifecycle drift (1) — advisory:
   ~ SPEC-00000000000000000000000001 [complete_but_not_terminal]: SPEC-00000000000000000000000001 has 2/2 primary ACs done and 1 commit(s) attached, but status is 'draft'. Transition it, or move incomplete work to a deferred section.

@@ -67,8 +67,8 @@ uv tool install git+https://github.com/doruksahin/decree
 ## Optional: track active sprint work
 
 Sprint mode scopes `decree progress` and `decree ddd` to the active work in the current
-timebox. In v3, sprint membership is stored as one file per document, so parallel
-worktrees can add and finish different items without fighting over one `ledger.yaml`.
+timebox. Sprint membership is stored as one file per document, so parallel worktrees can add and
+finish different items without fighting over one shared file.
 
 ```bash
 decree sprint init "Sprint 1"
@@ -84,13 +84,6 @@ open work, done items awaiting rollover, buckets, and acceptance-criteria progre
 workers do not need the board; hand each one a document ID and let it run the CLI/MCP loop
 against that scoped item. When backlog or draft-pool work becomes current-sprint work,
 promote it with `decree sprint move DOC-ID --to active`.
-
-Existing projects with the old single-file sprint ledger migrate once:
-
-```bash
-decree migrate sprint-ledger --dry-run
-decree migrate sprint-ledger --apply
-```
 
 ## The loop agents and CI run
 

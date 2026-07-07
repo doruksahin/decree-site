@@ -2,8 +2,8 @@
 [1m── The corpus: same two decisions claiming src/auth/tokens.py ──[0m
 [index] rebuilding into .decree/index.sqlite
 [index] decisions=2  refs=0  governs=2  acs=0  commits=0
-[index] git_sync_ms=22
-✓ index rebuilt in 38ms
+[index] git_sync_ms=70
+✓ index rebuilt in 91ms
 
 [1m── Make a change, then review the diff against governance (CI-shaped, exit 1) ──[0m
 

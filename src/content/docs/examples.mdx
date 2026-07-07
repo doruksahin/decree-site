@@ -133,10 +133,10 @@ two advisory signals for governance *quality*. None of these change an exit code
 
 ### 7 · Can sprint tracking survive parallel work?
 
-The v3 sprint store replaces the old shared `ledger.yaml` with `state.yaml`,
-`live/<DOC-ID>.yaml`, and `closed/<SPRINT-ID>.yaml`. Routine work touches one
-membership file, so different worktrees can add or finish different documents without
-creating one YAML conflict hotspot. <ExitBadge code={0} />
+The v3 sprint store keeps membership in `state.yaml`, one `live/<DOC-ID>.yaml` per
+document, and `closed/<SPRINT-ID>.yaml`. Routine work touches one membership file, so
+different worktrees can add or finish different documents without creating one YAML
+conflict hotspot. <ExitBadge code={0} />
 
 In practice, a human orchestrator can refresh the local HTML board when they want a
 snapshot, pick one open sprint item, and hand that document ID to a worker agent. The
@@ -155,9 +155,6 @@ promotes it first with `decree sprint move DOC-ID --to active`.
   </TabItem>
   <TabItem label="done awaiting rollover">
     <Ansi name="snippets/sprint-status-done" />
-  </TabItem>
-  <TabItem label="migrate v1 ledger">
-    <Ansi name="snippets/sprint-migrate-dry-run" />
   </TabItem>
 </Tabs>
 

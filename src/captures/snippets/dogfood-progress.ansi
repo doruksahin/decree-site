@@ -2,7 +2,7 @@
 [1;36m$ decree progress --corpus[0m
 [progress] loaded 52 documents
 [progress] scope: all documents
-✓ 507/531 primary items complete (95%) across 52 documents
+✓ 508/532 primary items complete (95%) across 52 documents
 [progress] 0/104 deferred items separated from primary progress
 [progress] use --doc ID, --chain ID, --changed --base REF, --governs PATH, or sprint scope flags to narrow work
 Scope: all documents
@@ -58,6 +58,6 @@ Scope: all documents
   SPEC-01KW25D3W2KH097XXDP4EVE1X4  HTML Board Markdown Overlay               draft        ██████████ 100% (10/10 primary)
   SPEC-01KW2BEQ5J7JWM93K4YAS9GZAB  Agent Skill Install CLI                   approved     ██████████ 100% (12/12 primary)
   SPEC-01KWKXHERB56W94SCRZEVMBQMJ  Sprint Ledger v2 Storage and Item-Lev...  implemented  ██████████ 100% (9/9 primary); deferred 0/6
-  SPEC-01KWXPAP3ENJ9BF7MADKHHCF6H  Typed intent-check findings and plann...  implemented  ██████████ 100% (9/9 primary)
+  SPEC-01KWXPAP3ENJ9BF7MADKHHCF6H  Typed intent-check findings and plann...  implemented  ██████████ 100% (10/10 primary)
 
 [2m→ exit 0[0m

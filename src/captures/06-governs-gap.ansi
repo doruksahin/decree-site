@@ -2,8 +2,8 @@
 [1m── The corpus: SPEC-…0001's own commits repeat-touch a helper it never declares ──[0m
 [index] rebuilding into .decree/index.sqlite
 [index] decisions=1  refs=0  governs=1  acs=0  commits=2
-[index] git_sync_ms=52
-✓ index rebuilt in 67ms
+[index] git_sync_ms=118
+✓ index rebuilt in 145ms
 
 [1m── In a governed session under SPEC-…0001, planning to edit the helper (advisory, exit 0) ──[0m
 
@@ -20,6 +20,9 @@ Clean later (2):
 
 Recommended next command:
   Proceed; address the advisory / corpus-hygiene items when convenient.
+
+Active decision: SPEC-00000000000000000000000001
+  Owned files (0): (none)
 
 Planned files (1):
   • src/auth/helper.py

@@ -13,7 +13,12 @@ Clean later (3):
   ~ check_ac [SPEC-00000000000000000000000002]: SPEC-00000000000000000000000002 has an unchecked AC under 'Acceptance Criteria': Old tokens revoked on rotation
 
 Recommended next command:
-  decree intent-check --under SPEC-00000000000000000000000001 --plan "..." --files ...  (name the authoritative decision; treat the other governors as contextual)
+  Proceed under SPEC-00000000000000000000000001; the other governors are contextual — resolve only if their acceptance criteria contradict your plan.
+
+Active decision: SPEC-00000000000000000000000001
+  Owned files (1): src/auth/tokens.py
+  Contextual overlaps (1):
+    ~ src/auth/tokens.py — also governed by SPEC-00000000000000000000000002 (context, not a contradiction)
 
 Planned files (1):
   • src/auth/tokens.py

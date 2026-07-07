@@ -90,21 +90,13 @@ a shared contract. Reported flat, that reads as a conflict every time. Pass
 
 <Ansi name="snippets/intent-check-under" />
 
-The `--json` output makes the frame explicit — what your decision **owns**, which other
-governors are **contextual**, and any path it does **not** own (a real contradiction):
+The **Active decision** block spells out the frame — what your decision **owns**, which
+other governors are **contextual**, and any path it does **not** own (a real
+contradiction) — and the recommended next command guides you to proceed under it. The same
+three keys (`owned_files`, `contextual_overlaps`, `contradictions`) are in the `--json`
+output for programmatic consumers.
 
-```json
-{
-  "under_decision": "SPEC-…01",
-  "owned_files": ["src/auth/tokens.py"],
-  "contextual_overlaps": [
-    { "path": "src/auth/tokens.py", "contextual_decision_ids": ["SPEC-…02"] }
-  ],
-  "contradictions": []
-}
-```
-
-<Callout kind="value">"Work under SPEC-…01; treat SPEC-…02 as context" is a call an agent can make deterministically — instead of stopping on every hot file three decisions happen to share.</Callout>
+<Callout kind="value">"Work under SPEC-…01; treat SPEC-…02 as context" is a call an agent can make deterministically — instead of stopping on every hot file two decisions happen to share.</Callout>
 
 A separate advisory, `directory_overlaps`, surfaces co-governance the exact-path conflict
 query can't see: a file owned by one decision exactly and another via a directory

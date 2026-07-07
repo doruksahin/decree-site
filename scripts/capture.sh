@@ -398,52 +398,6 @@ EOF
   snip sprint-status-done.ansi sprint status
 }
 
-# Corpus H — a v1 sprint ledger that needs the one-shot v2 migration.
-gen_sprint_migration() {
-  q make_demo_repo
-  mkdir -p decree/spec decree/sprints src/auth
-  spec spec-00000000000000000000000001-token-storage.md <<'EOF'
----
-id: SPEC-00000000000000000000000001
-status: approved
-date: 2026-07-03
-governs:
-  - src/auth/tokens.py
----
-
-# SPEC-00000000000000000000000001 Token Storage API
-
-## Overview
-
-Tokens are stored hashed at rest.
-
-## Acceptance Criteria
-
-- [x] Hash tokens before persistence
-- [x] Revoke on logout
-EOF
-  echo "def store(token): ..." > src/auth/tokens.py
-  cat > decree/sprints/ledger.yaml <<'EOF'
-schema: decree.sprints.v1
-mode: enabled
-state: active
-active: SPRINT-00000000000000000000000001
-sprints:
-- id: SPRINT-00000000000000000000000001
-  name: Sprint 1
-  status: active
-  started: '2026-07-03'
-  items:
-  - document: SPEC-00000000000000000000000001
-    kind: execution
-    source: manual
-    added: '2026-07-03'
-backlog: []
-draft_pool: []
-EOF
-  q git add -A; q git commit -qm "init: v1 sprint corpus"
-  snip sprint-migrate-dry-run.ansi migrate sprint-ledger --dry-run
-}
 
 # Corpus I — the REAL decree repo (dogfood): decree governs its own code.
 # Runs against the sibling ../decree working tree, not a throwaway corpus.
@@ -576,7 +530,6 @@ Implements: SPEC-00000000000000000000000001"
 ( gen_commit_check )
 ( gen_lifecycle )
 ( gen_sprint_v2 )
-( gen_sprint_migration )
 gen_dogfood
 
 echo
